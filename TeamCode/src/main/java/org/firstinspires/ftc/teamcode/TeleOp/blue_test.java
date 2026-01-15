@@ -162,7 +162,6 @@ public class blue_test extends LinearOpMode {
             shooter.ShotResult result = shooter.calculateShot(current_robot_pos, BLUE_GOAL, SCORE_HEIGHT, current_robot_vel, SCORE_ANGLE);
 
             if (check_shooting_zone(current_robot_pos) && result != null) {
-                double StaticTargetPos = tracking.fix_to_goal_BLUE(current_robot_pos);
 
                 double StaticTargetPosTicks = tracking.fix_to_goal_BLUE(current_robot_pos);
 
