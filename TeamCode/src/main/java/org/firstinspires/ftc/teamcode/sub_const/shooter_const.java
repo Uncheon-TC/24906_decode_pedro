@@ -8,7 +8,7 @@ public class shooter_const {
     public static Pose RED_GOAL = BLUE_GOAL.mirror();
     public static double SCORE_HEIGHT = 26; //inch
     public static double SCORE_ANGLE = Math.toRadians(-30); //rad
-    public static double PASS_THROUGH_POINT_RADIUS = 5; //inch
+    //public static double PASS_THROUGH_POINT_RADIUS = 5; //inch
 
     public static double HOOD_MIN_ANGLE = Math.toRadians(2);    //NEED ADJ
     public static double HOOD_MAX_ANGLE = Math.toRadians(6);    //NEED ADJ
