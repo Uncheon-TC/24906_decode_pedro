@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.auto_cal;
 
-import static org.firstinspires.ftc.teamcode.sub_const.shooter_const.BLUE_GOAL;
-import static org.firstinspires.ftc.teamcode.sub_const.shooter_const.RED_GOAL;
+import static org.firstinspires.ftc.teamcode.sub_const.pos_const.BLUE_GOAL;
+import static org.firstinspires.ftc.teamcode.sub_const.pos_const.RED_GOAL;
 import static org.firstinspires.ftc.teamcode.sub_const.shooter_const.TICKS_PER_REV_SHOOTER;
 
 import com.pedropathing.geometry.Pose;

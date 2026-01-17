@@ -20,13 +20,16 @@ public class config_turrert_pid extends OpMode {
     public static double i = 0;
 @Sorter(sort = 2)
     public static double d = 0;
-    public final double f = 0;
 @Sorter(sort = 3)
+    public static double f = 0;
+@Sorter(sort = 4)
     public static double target_deg = 0;
     public double target_tick;
     public final double ticks_per_rev = 103.8;
     private PIDFCoefficients pidfCoefficients;
     private double motor_power;
+
+    private double lastP, lastI, lastD, lastF;
 
     DcMotor SA;
 
@@ -41,16 +44,22 @@ public class config_turrert_pid extends OpMode {
         SA.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         SA.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
+        SA.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
     }
 
     @Override
     public void loop() {
 
+        if (p != lastP || i != lastI || d != lastD || f != lastF) {
+            PIDFCoefficients coeffs = new PIDFCoefficients(p, i, d, f);
+            controller.setCoefficients(coeffs);
+
+            lastP = p; lastI = i; lastD = d; lastF = f;
+        }
+
         target_tick = (target_deg/360.0) * (105.0/25.0) * ticks_per_rev; //패널에서 목표각도 입력 -> tick으로 변환
         controller.setTargetPosition(target_tick); //pidf controller 상수 변경
-
-        pidfCoefficients = new PIDFCoefficients(p,i,d,f);
-        controller.setCoefficients(pidfCoefficients);
 
         double currentPos = SA.getCurrentPosition();
         controller.updatePosition(currentPos);
@@ -65,7 +74,7 @@ public class config_turrert_pid extends OpMode {
         telemetry.addData("target deg: ", target_deg);
         telemetry.addData("error deg: ", target_deg - current_deg);
         telemetry.addData("target tick: ", target_tick);
-        telemetry.addData("error tick: ", target_tick - controller.getError());
+        telemetry.addData("error tick: ", controller.getError());
         telemetry.update();
     }
 }
