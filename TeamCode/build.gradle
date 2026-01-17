@@ -34,5 +34,5 @@ android {
 dependencies {
     implementation project(':FtcRobotController')
     implementation "com.bylazar:fullpanels:1.0.12"
-    implementation 'com.acmerobotics.dashboard:dashboard:0.5.1'
+    implementation 'com.acmerobotics.dashboard:dashboard:0.4.16'
 }
