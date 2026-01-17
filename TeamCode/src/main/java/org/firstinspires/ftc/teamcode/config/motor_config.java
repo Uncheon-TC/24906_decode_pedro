@@ -15,11 +15,15 @@ import java.lang.reflect.Field;
 @TeleOp(name = "config_motor", group = "config")
 public class motor_config extends OpMode {
 
-    Servo servo_s, servo_hood;
+    Servo servo_s, servo_hood, servo_eat;
     DcMotor eat, SL, SR, SA;
 
-    public static double tar_servo_s, tar_servo_hood;
-    public static int tar_eat, tar_SLR, tar_SA;
+    public static double tar_servo_s = 0.5;
+    public static double tar_servo_hood = 0.5;
+    public static double tar_servo_eat = 0.5;
+    public static int tar_eat = 0;
+    public static int tar_SLR = 0;
+    public static int tar_SA = 0;
 
 
     @Override
@@ -28,8 +32,9 @@ public class motor_config extends OpMode {
         servo_s = hardwareMap.servo.get("servo_s");
         servo_hood = hardwareMap.servo.get("servo_hood");
 
-        servo_s.setPosition(0.5);
-        servo_hood.setPosition(0.5);
+        servo_s.setPosition(tar_servo_s);
+        servo_hood.setPosition(tar_servo_hood);
+        servo_eat.setPosition(tar_servo_eat);
 
         eat = hardwareMap.dcMotor.get("eat");
         SL = hardwareMap.dcMotor.get("SL");
