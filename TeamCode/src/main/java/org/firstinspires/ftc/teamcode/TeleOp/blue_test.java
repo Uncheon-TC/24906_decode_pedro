@@ -73,7 +73,7 @@ public class blue_test extends LinearOpMode {
         SR  = hardwareMap.dcMotor.get("SR");
         SA = hardwareMap.dcMotor.get("SA");
 
-        odo = hardwareMap.get(GoBildaPinpointDriver.class, "odo");
+        odo = hardwareMap.get(GoBildaPinpointDriver.class, "pinpoint");
         odo.setOffsets(-12, -5);  //cm?
         odo.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
         odo.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD,
@@ -164,27 +164,9 @@ public class blue_test extends LinearOpMode {
             servo_S.setPosition(gamepad1.left_bumper ? 0.35 : 0.5);
 
 
-            if (gamepad1.aWasPressed()) {
-                eat.setPower(1);
-            }
-
-            if (gamepad1.bWasPressed()) {
-                eat.setPower(0);
-            }
-
-            if (gamepad1.xWasPressed()) {
-                SL.setPower(1);
-                SR.setPower(1);
-            }
-
-            if (gamepad1.yWasPressed()) {
-                SL.setPower(0);
-                SR.setPower(0);
-            }
-
             shooter.ShotResult result = shooter.calculateShot(current_robot_pos, BLUE_GOAL, SCORE_HEIGHT, current_robot_vel, SCORE_ANGLE);
 
-            if (check_shooting_zone(current_robot_pos) && result != null) {
+            if (result != null) {
 
                 double StaticTargetPosTicks = tracking.fix_to_goal_BLUE(current_robot_pos);
 
@@ -201,21 +183,25 @@ public class blue_test extends LinearOpMode {
 
                 servo_hood.setPosition(hood_servo_pos);
 
+
+            }
+
+            if (gamepad1.a && result != null) {
                 double targetMotorVelocity = velocityToTicks(result.launchSpeed);
 
                 ((com.qualcomm.robotcore.hardware.DcMotorEx) SL).setVelocity(targetMotorVelocity);
                 ((com.qualcomm.robotcore.hardware.DcMotorEx) SR).setVelocity(targetMotorVelocity);
             } else {
-                SL.setPower(0);
-                SR.setPower(0);
+                ((com.qualcomm.robotcore.hardware.DcMotorEx) SL).setVelocity(0);
+                ((com.qualcomm.robotcore.hardware.DcMotorEx) SR).setVelocity(0);
             }
 
             telemetry.addData("eat Power", eat.getPower());
             telemetry.addData("SL Power", SL.getPower());
             telemetry.addData("SR Power", SR.getPower());
             telemetry.addData("Servo_S Pos", servo_S.getPosition());
-            telemetry.addData("Heading (deg)",
-                    imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
+            /*telemetry.addData("Heading (deg)",
+                    imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));*/
             telemetry.addData("target encoder", SA.getTargetPosition());
             telemetry.addData("current encoder", SA.getCurrentPosition());
             telemetry.update();

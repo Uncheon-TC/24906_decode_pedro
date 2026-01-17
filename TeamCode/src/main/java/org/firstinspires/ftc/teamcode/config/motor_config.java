@@ -29,8 +29,8 @@ public class motor_config extends OpMode {
     @Override
     public void init() {
 
-        servo_s = hardwareMap.servo.get("servo_s");
-        servo_hood = hardwareMap.servo.get("servo_hood");
+        servo_s = hardwareMap.servo.get("servo_S");
+        servo_hood = hardwareMap.servo.get("servo_H");
 
         servo_s.setPosition(tar_servo_s);
         servo_hood.setPosition(tar_servo_hood);
