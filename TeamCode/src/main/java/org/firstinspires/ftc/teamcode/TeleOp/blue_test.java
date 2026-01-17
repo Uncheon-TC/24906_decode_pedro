@@ -34,7 +34,7 @@ import org.firstinspires.ftc.teamcode.auto_cal.Turret_Tracking;
 @TeleOp(name = "decode 23020", group = "2024-2025 Test OP")
 public class blue_test extends LinearOpMode {
 
-    private DcMotor FrontLeftMotor, FrontRightMotor, BackLeftMotor, BackRightMotor;
+    private DcMotor FrontLeftMotor, FrontRightMotor, BackLeftMotor, BackRightMotor; //메카넘
     private DcMotor eat, SL, SR, SA;
     private Servo servo_S, servo_hood;
     private IMU imu;

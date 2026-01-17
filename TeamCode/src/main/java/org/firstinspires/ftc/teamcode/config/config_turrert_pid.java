@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.config;
 
 import com.bylazar.configurables.annotations.Configurable;
+import com.bylazar.configurables.annotations.Sorter;
 import com.pedropathing.control.PIDFCoefficients;
 import com.pedropathing.control.PIDFController;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -9,13 +10,18 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 @Configurable
 
-@TeleOp
-public class turrert_pid extends OpMode {
+@TeleOp(name = "config_turret_pid", group = "config")
+public class config_turrert_pid extends OpMode {
 
     private PIDFController controller;
-
-    public static double p = 0, i = 0, d = 0;
+@Sorter(sort = 0)
+    public static double p = 0;
+@Sorter(sort = 1)
+    public static double i = 0;
+@Sorter(sort = 2)
+    public static double d = 0;
     public final double f = 0;
+@Sorter(sort = 3)
     public static double target_deg = 0;
     public double target_tick;
     public final double ticks_per_rev = 103.8;
