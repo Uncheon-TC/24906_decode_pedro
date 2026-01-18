@@ -32,7 +32,7 @@ public class config_turrert_pid extends OpMode {
 @Sorter(sort = 4)
     public static double target_deg = 0;
     public double target_tick;
-    public final double ticks_per_rev = 103.8;
+    public final double ticks_per_rev = 537.7; //312 rpm
     private PIDFCoefficients pidfCoefficients;
     private double motor_power;
 
