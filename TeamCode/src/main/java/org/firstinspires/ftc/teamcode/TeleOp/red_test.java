@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.TeleOp;
 
 import static org.firstinspires.ftc.teamcode.sub_const.pos_const.*;
-
 import static org.firstinspires.ftc.teamcode.sub_const.shooter_const.*;
 
 import static java.lang.Math.round;
@@ -23,6 +22,7 @@ import org.firstinspires.ftc.teamcode.auto_cal.shooter;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 import org.firstinspires.ftc.teamcode.auto_cal.Turret_Tracking;
+import org.firstinspires.ftc.teamcode.sub_const.servo_pos_const;
 
 @TeleOp(name = "decode 23020_RED", group = "2024-2025 Test OP")
 public class red_test extends LinearOpMode {
@@ -111,10 +111,10 @@ public class red_test extends LinearOpMode {
 
 
         servo_S = hardwareMap.servo.get("servo_S");
-        servo_S.setPosition(0.5); // 기본 위치
+        servo_S.setPosition(servo_pos_const.servo_shoot_block); // 기본 위치
 
         servo_hood = hardwareMap.servo.get("servo_H");
-        servo_hood.setPosition(0.5);  //기본위치 찾기
+        servo_hood.setPosition(servo_pos_const.servo_hood_min);  //기본위치 찾기
 
 
         com.qualcomm.robotcore.hardware.PIDFCoefficients flywheel_pidfCoeffiients
@@ -138,7 +138,6 @@ public class red_test extends LinearOpMode {
 
        //follower.setPose(center);
 
-        double sp = 0;
 
         waitForStart();
 
@@ -188,16 +187,15 @@ public class red_test extends LinearOpMode {
             //servo_S.setPosition(gamepad1.left_bumper ? 0.35 : 0.5);
 
             if (gamepad1.left_bumper) {
-                servo_S.setPosition(0.35);
+                servo_S.setPosition(servo_pos_const.servo_shoot_go);
                 eat.setPower(1);
             } else {
-                servo_S.setPosition(0.5);
+                servo_S.setPosition(servo_pos_const.servo_shoot_block);
                 eat.setPower(0);
             }
 
-            if (gamepad1.x) {
-                eat.setPower(1);
-            }
+            if (gamepad1.x) eat.setPower(1);
+
             if (gamepad1.y) eat.setPower(0);
 
             /*if (gamepad1.left_bumper) {

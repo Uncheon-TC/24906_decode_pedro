@@ -8,8 +8,8 @@ public class shooter_const {
 
     public static double HOOD_MIN_ANGLE = Math.toRadians(2);    //NEED ADJ
     public static double HOOD_MAX_ANGLE = Math.toRadians(6);    //NEED ADJ
-    public static double HOOD_SERVO_MIN = 0.1;    //NEED ADJ
-    public static double HOOD_SERVO_MAX = 0.2;    //NEED ADJ
+    public static double HOOD_SERVO_MIN = servo_pos_const.servo_hood_min;    //NEED ADJ
+    public static double HOOD_SERVO_MAX = servo_pos_const.servo_hood_min;    //NEED ADJ
 
     public static double FLYWHEEL_TPR = 103.8;
     public static double WHEEL_RADIUS = 2.0;    //NEED ADJ

@@ -1,6 +1,9 @@
 package org.firstinspires.ftc.teamcode.config;
 
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.bylazar.configurables.annotations.Configurable;
+import com.bylazar.telemetry.PanelsTelemetry;
+import com.bylazar.telemetry.TelemetryManager;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -17,6 +20,7 @@ public class motor_config extends OpMode {
 
     Servo servo_s, servo_hood, servo_eat;
     DcMotor eat, SL, SR, SA;
+    private TelemetryManager panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
 
     public static double tar_servo_s = 0.5;
     public static double tar_servo_hood = 0.5;
@@ -31,6 +35,7 @@ public class motor_config extends OpMode {
 
         servo_s = hardwareMap.servo.get("servo_S");
         servo_hood = hardwareMap.servo.get("servo_H");
+        servo_eat = hardwareMap.servo.get("servo_EAT");
 
         servo_s.setPosition(tar_servo_s);
         servo_hood.setPosition(tar_servo_hood);
@@ -58,8 +63,12 @@ public class motor_config extends OpMode {
 
     @Override
     public void loop() {
+
+        TelemetryPacket packet = new TelemetryPacket();
+
         servo_s.setPosition(tar_servo_s);
         servo_hood.setPosition(tar_servo_hood);
+        servo_eat.setPosition(tar_servo_eat);
 
         eat.setTargetPosition(tar_eat);
         SL.setTargetPosition(tar_SLR);
@@ -71,20 +80,20 @@ public class motor_config extends OpMode {
         SR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         SA.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        telemetry.addData("current_servo_s: ", servo_s.getPosition());
-        telemetry.addData("target_servo_s: ", tar_servo_s);
-        telemetry.addData("current_servo_hood: ", servo_hood.getPosition());
-        telemetry.addData("target_servo_hood: ", tar_servo_hood);
+        panelsTelemetry.addData("current_servo_s", servo_s.getPosition());
+        panelsTelemetry.addData("target_servo_s", tar_servo_s);
+        panelsTelemetry.addData("current_servo_hood", servo_hood.getPosition());
+        panelsTelemetry.addData("target_servo_hood", tar_servo_hood);
 
-        telemetry.addData("current_eat: ", eat.getCurrentPosition());
-        telemetry.addData("target_eat: ", tar_eat);
-        telemetry.addData("current_SL: ", SL.getCurrentPosition());
-        telemetry.addData("target_SL: ", tar_SLR);
-        telemetry.addData("current_SR: ", SR.getCurrentPosition());
-        telemetry.addData("target_SR: ", tar_SLR);
-        telemetry.addData("current_SA: ", SA.getCurrentPosition());
-        telemetry.addData("target_SA: ", tar_SA);
+        panelsTelemetry.addData("current_eat", eat.getCurrentPosition());
+        panelsTelemetry.addData("target_eat", tar_eat);
+        panelsTelemetry.addData("current_SL", SL.getCurrentPosition());
+        panelsTelemetry.addData("target_SL", tar_SLR);
+        panelsTelemetry.addData("current_SR", SR.getCurrentPosition());
+        panelsTelemetry.addData("target_SR", tar_SLR);
+        panelsTelemetry.addData("current_SA", SA.getCurrentPosition());
+        panelsTelemetry.addData("target_SA", tar_SA);
 
-        telemetry.update();
+        panelsTelemetry.update(telemetry);
     }
 }
