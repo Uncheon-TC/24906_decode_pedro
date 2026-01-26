@@ -1,17 +1,23 @@
 package org.firstinspires.ftc.teamcode.config;
 
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.bylazar.configurables.annotations.Configurable;
+import com.bylazar.telemetry.PanelsTelemetry;
+import com.bylazar.telemetry.TelemetryManager;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Configurable
 
 @TeleOp(name = "config_flywheel_pid", group = "config")
 public class flywheel_pid extends OpMode {
+
+    private TelemetryManager panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
 
     DcMotorEx SL, SR;
 
@@ -23,9 +29,13 @@ public class flywheel_pid extends OpMode {
     public static double tar_vel = 0;
 
     private double lastP, lastI, lastD, lastF;
+    private ElapsedTime timer = new ElapsedTime();
 
     @Override
     public void init() {
+
+        timer.reset();
+
         SL = hardwareMap.get(DcMotorEx.class, "SL");
         SR = hardwareMap.get(DcMotorEx.class, "SR");
 
@@ -49,7 +59,15 @@ public class flywheel_pid extends OpMode {
     }
 
     @Override
+    public void start() {
+        timer.reset();
+    }
+
+    @Override
     public void loop() {
+
+        TelemetryPacket packet = new TelemetryPacket();
+
         if (p != lastP || i != lastI || d != lastD || f != lastF) {
             PIDFCoefficients pidfCoefficients = new PIDFCoefficients(p, i, d, f);
             SL.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidfCoefficients);
@@ -74,19 +92,25 @@ public class flywheel_pid extends OpMode {
         double err_vel_diff = err_vel_SL - err_vel_SR;
 
 
-        telemetry.addData("target vel: ", tar_vel);
+        panelsTelemetry.addData("target vel", tar_vel);
 
-        telemetry.addData("current vel(SL): ", cur_vel_SL);
-        telemetry.addData("current vel(SR): ", cur_vel_SR);
-        telemetry.addData("current vel(avg): ", cur_vel_avg);
-        telemetry.addData("current vel(diff, L-R): ", cur_vel_diff);
+        panelsTelemetry.addData("current vel(SL)", cur_vel_SL);
+        panelsTelemetry.addData("current vel(SR)", cur_vel_SR);
+        panelsTelemetry.addData("current vel(avg)", cur_vel_avg);
+        panelsTelemetry.addData("current vel(diff, L-R)", cur_vel_diff);
 
-        telemetry.addData("current err(SL): ", err_vel_SL);
-        telemetry.addData("current err(SR): ", err_vel_SR);
-        telemetry.addData("current err(avg): ", err_vel_avg);
-        telemetry.addData("current err(diff, L-R)", err_vel_diff);
+        panelsTelemetry.addData("current err(SL)", err_vel_SL);
+        panelsTelemetry.addData("current err(SR)", err_vel_SR);
+        panelsTelemetry.addData("current err(avg)", err_vel_avg);
+        panelsTelemetry.addData("current err(diff, L-R)", err_vel_diff);
 
-        telemetry.update();
+
+        panelsTelemetry.addData("p", p);
+        panelsTelemetry.addData("i", i);
+        panelsTelemetry.addData("d", d);
+
+
+        panelsTelemetry.update(telemetry);
     }
 
     @Override

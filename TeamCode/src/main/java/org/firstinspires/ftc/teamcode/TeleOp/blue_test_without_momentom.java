@@ -1,272 +1,136 @@
-package org.firstinspires.ftc.teamcode.TeleOp;
+/*package org.firstinspires.ftc.teamcode.TeleOp;
 
 import static org.firstinspires.ftc.teamcode.pedroPathing.Tuning.follower;
 import static org.firstinspires.ftc.teamcode.sub_const.pos_const.BLUE_GOAL;
 import static org.firstinspires.ftc.teamcode.sub_const.shooter_const.HOOD_MAX_ANGLE;
 import static org.firstinspires.ftc.teamcode.sub_const.shooter_const.HOOD_MIN_ANGLE;
-import static org.firstinspires.ftc.teamcode.sub_const.shooter_const.HOOD_SERVO_MAX;
-import static org.firstinspires.ftc.teamcode.sub_const.shooter_const.HOOD_SERVO_MIN;
-import static org.firstinspires.ftc.teamcode.sub_const.shooter_const.SCORE_ANGLE;
-import static org.firstinspires.ftc.teamcode.sub_const.shooter_const.SCORE_HEIGHT;
-import static org.firstinspires.ftc.teamcode.sub_const.shooter_const.FLYWHEEL_TPR;
-import static org.firstinspires.ftc.teamcode.sub_const.shooter_const.WHEEL_RADIUS;
+import static org.firstinspires.ftc.teamcode.sub_const.shooter_const.shooter_i;
 import static org.firstinspires.ftc.teamcode.sub_const.shooter_const.shooter_d;
 import static org.firstinspires.ftc.teamcode.sub_const.shooter_const.shooter_f;
-import static org.firstinspires.ftc.teamcode.sub_const.shooter_const.shooter_i;
 import static org.firstinspires.ftc.teamcode.sub_const.shooter_const.shooter_p;
 import static java.lang.Math.round;
 
+import androidx.xr.runtime.math.Pose;
+
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.robotcore.hardware.Servo; // 서보 임포트 확인
 import com.bylazar.configurables.annotations.Configurable;
 import com.pedropathing.control.PIDFCoefficients;
 import com.pedropathing.control.PIDFController;
 import com.pedropathing.follower.Follower;
-import com.pedropathing.geometry.Pose;
-import com.pedropathing.math.Vector;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.IMU;
-import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.util.Range;
+import com.pedropathing.localization.Pose;
+import com.pedropathing.pathgen.Vector;
 
 import org.firstinspires.ftc.teamcode.auto_cal.Turret_Tracking;
-import org.firstinspires.ftc.teamcode.auto_cal.shooter;
 import org.firstinspires.ftc.teamcode.config.GoBildaPinpointDriver;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
-
 
 @Configurable
 @TeleOp(name = "decode 23020_BLUE", group = "2024-2025 Test OP")
 public class blue_test_without_momentom extends LinearOpMode {
 
-    private DcMotor FrontLeftMotor, FrontRightMotor, BackLeftMotor, BackRightMotor; //메카넘
     private DcMotor eat, SL, SR, SA;
-    private Servo servo_S, servo_hood;
+    private Servo servo_S; // 서보 변수
     private IMU imu;
     Turret_Tracking tracking = new Turret_Tracking();
     private Follower follower;
-    private final Pose startPose = new Pose(72,72, Math.toRadians(90));
-    private static double p = 0;
-    private static double i = 0;
-    private static double d = 0;
-    private double sta_f = shooter_f;
-    private PIDFController controller;
-    private double target_tick;
 
+    private final Pose startPose = new Pose(72, 72, Math.toRadians(90));
+    private static double p = 0, i = 0, d = 0;
+    private double sta_p = shooter_p, sta_i = shooter_i, sta_d = shooter_d, sta_f = shooter_f;
+
+    private PIDFController controller;
     private PIDFCoefficients pidfCoefficients;
-    private double motor_power;
-    private int finalTurretAngle;
     private double StaticTargetPosTicks;
 
-    //GoBildaPinpointDriver odo;
-
+    GoBildaPinpointDriver odo;
     private double lastP, lastI, lastD, lastF;
 
+    // --- [추가] 서보 토글을 위한 상태 변수 ---
+    private boolean lastRightBumper = false;
+    private boolean isServoUp = false;
 
     @Override
     public void runOpMode() throws InterruptedException {
-
-        Pose center = new Pose(72, 72, 90);
-
-        follower = Constants.createFollower(hardwareMap);
-
+        // 하드웨어 초기화
+        follower = new Follower(hardwareMap);
         follower.setStartingPose(startPose);
 
-        pidfCoefficients = new PIDFCoefficients(p,i,d,sta_f);
+        pidfCoefficients = new PIDFCoefficients(p, i, d, sta_f);
         controller = new PIDFController(pidfCoefficients);
 
-
-        FrontLeftMotor  = hardwareMap.dcMotor.get("FL");
-        FrontRightMotor = hardwareMap.dcMotor.get("FR");
-        BackLeftMotor   = hardwareMap.dcMotor.get("BL");
-        BackRightMotor  = hardwareMap.dcMotor.get("BR");
-
-        FrontLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        BackLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        FrontRightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-
         eat = hardwareMap.dcMotor.get("eat");
-        SL  = hardwareMap.dcMotor.get("SL");
-        SR  = hardwareMap.dcMotor.get("SR");
+        SL = hardwareMap.dcMotor.get("SL");
+        SR = hardwareMap.dcMotor.get("SR");
         SA = hardwareMap.dcMotor.get("SA");
-
-        /*odo = hardwareMap.get(GoBildaPinpointDriver.class, "pinpoint");
-        odo.setOffsets(-12, -5);  //cm?
-        odo.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
-        odo.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD,
-                GoBildaPinpointDriver.EncoderDirection.FORWARD);*/
+        servo_S = hardwareMap.get(Servo.class, "servo_S"); // 하드웨어 맵 확인
 
         eat.setDirection(DcMotorSimple.Direction.FORWARD);
         SL.setDirection(DcMotorSimple.Direction.FORWARD);
         SR.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        SA.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        SA.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        odo = hardwareMap.get(GoBildaPinpointDriver.class, "pinpoint");
+        odo.recalibrateIMU();
 
-        SA.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        SL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        SR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        eat.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        SL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        SR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        eat.setPower(0);
-        SL.setPower(0);
-        SR.setPower(0);
-
-
-        servo_S = hardwareMap.servo.get("servo_S");
-        servo_S.setPosition(0.5); // 기본 위치
-
-        servo_hood = hardwareMap.servo.get("servo_H");
-        servo_hood.setPosition(0.5);  //기본위치 찾기
-
-        /*imu = hardwareMap.get(IMU.class, "imu");
-        IMU.Parameters parameters = new IMU.Parameters(
-                new RevHubOrientationOnRobot(
-                        RevHubOrientationOnRobot.LogoFacingDirection.RIGHT,
-                        RevHubOrientationOnRobot.UsbFacingDirection.UP
-                )
-        );
-
-        imu.initialize(parameters);*/
-
-        //odo.recalibrateIMU();
-
-       //follower.setPose(center);
+        // 시작 시 서보 위치 초기화
+        servo_S.setPosition(0.0);
 
         waitForStart();
 
-
         while (opModeIsActive()) {
+            odo.update();
+            follower.update();
 
-            //follower.setTeleOpDrive(-gamepad1.left_stick_y, -gamepad1.left_stick_x, -gamepad1.right_stick_x, false);
-            follower.update(); //current robot pose update
-
+            // PID 계수 실시간 업데이트 로직
             if (p != lastP || i != lastI || d != lastD || sta_f != lastF) {
                 PIDFCoefficients coeffs = new PIDFCoefficients(p, i, d, sta_f);
                 controller.setCoefficients(coeffs);
-
                 lastP = p; lastI = i; lastD = d; lastF = sta_f;
             }
 
-            //odo.update();
+            Pose current_robot_pos = follower.getPose();
 
-
-            Pose current_robot_pos = follower.getPose();  //save to Pose
-            Vector current_robot_vel = follower.getVelocity();
-
+            // 드라이브 로직 (기본 이동)
             double y = -gamepad1.left_stick_y;
-            double x = gamepad1.left_stick_x;
+            double x = -gamepad1.left_stick_x;
             double rx = -gamepad1.right_stick_x;
-
             double slow = 1 - (0.8 * gamepad1.right_trigger);
 
             if (gamepad1.options) {
-                //imu.resetYaw();
-                //odo.recalibrateIMU();
+                odo.recalibrateIMU();
             }
 
-            /*double botHeading = imu.getRobotYawPitchRollAngles()
-                    .getYaw(AngleUnit.RADIANS);*/
-
             double botHeading_pin = follower.getHeading();
-
             double rotX = x * Math.cos(-botHeading_pin) - y * Math.sin(-botHeading_pin);
             double rotY = x * Math.sin(-botHeading_pin) + y * Math.cos(-botHeading_pin);
 
-            rotX *= 1.1;
-
-            double denominator = Math.max(
-                    Math.abs(rotY) + Math.abs(rotX) + Math.abs(rx), 1
-            );
-
-            FrontLeftMotor.setPower((rotY + rotX - rx) / denominator * slow);
-            BackLeftMotor.setPower((rotY - rotX - rx) / denominator * slow);
-            FrontRightMotor.setPower((rotY - rotX + rx) / denominator * slow);
-            BackRightMotor.setPower((rotY + rotX + rx) / denominator * slow);
-            //메카넘 끝
-
-
-
-
-            servo_S.setPosition(gamepad1.left_bumper ? 0.35 : 0.5);
-
-
-            shooter.ShotResult result = shooter.calculateShot(current_robot_pos, BLUE_GOAL, SCORE_HEIGHT, current_robot_vel, SCORE_ANGLE);
-
-            if (result != null) {
-
-                StaticTargetPosTicks = tracking.fix_to_goal_RED(current_robot_pos);
-
-                //double offsetTicks = (result.turretOffset / (2 * Math.PI)) * FLYWHEEL_TPR * (105.0/25.0);
-
-                //finalTurretAngle = (int) round(StaticTargetPosTicks + offsetTicks);
-
-                double clampedAngle = Range.clip(result.hoodAngle, HOOD_MIN_ANGLE, HOOD_MAX_ANGLE);
-                double hood_servo_pos = mapAngleToServo(clampedAngle);
-
-                servo_hood.setPosition(hood_servo_pos);
-
-                //터렛 pid 계산
-                controller.setTargetPosition(StaticTargetPosTicks);
-
-                double currentPos = SA.getCurrentPosition();
-                controller.updatePosition(currentPos);
-
-                motor_power = controller.run();
-                SA.setPower(motor_power);
-
-
+            // --- [추가] 오른쪽 범퍼 서보 토글 로직 ---
+            if (gamepad1.right_bumper && !lastRightBumper) {
+                if (isServoUp) {
+                    servo_S.setPosition(0.0); // 내려가는 위치
+                } else {
+                    servo_S.setPosition(0.5); // 올라가는 위치 (필요시 0.5를 다른 값으로 수정)
+                }
+                isServoUp = !isServoUp;
             }
+            lastRightBumper = gamepad1.right_bumper;
+            // ------------------------------------
 
-            if (gamepad1.a && result != null) {
-                double targetMotorVelocity = velocityToTicks(result.launchSpeed);
+            // 타겟 트래킹 (RED로 수정된 부분 유지)
+            StaticTargetPosTicks = tracking.fix_to_goal_RED(current_robot_pos);
 
-                ((DcMotorEx) SL).setVelocity(targetMotorVelocity);
-                ((DcMotorEx) SR).setVelocity(targetMotorVelocity);
-            } else {
-                ((DcMotorEx) SL).setVelocity(0);
-                ((DcMotorEx) SR).setVelocity(0);
-            }
-
-
-
-            /*telemetry.addData("eat Power", eat.getPower());
-            telemetry.addData("SL Power", SL.getPower());
-            telemetry.addData("SR Power", SR.getPower());
-            telemetry.addData("Servo_S Pos", servo_S.getPosition());
-            /*telemetry.addData("Heading (deg)",
-                    imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));*/
+            // 텔레메트리 출력
+            telemetry.addData("Servo State", isServoUp ? "UP" : "DOWN");
+            telemetry.addData("Servo Pos", servo_S.getPosition());
             telemetry.addData("target encoder", StaticTargetPosTicks);
             telemetry.addData("current encoder", SA.getCurrentPosition());
-            telemetry.addData("heading", Math.toDegrees(follower.getHeading()));
             telemetry.addData("x", follower.getPose().getX());
             telemetry.addData("y", follower.getPose().getY());
             telemetry.update();
         }
     }
-
-    public boolean check_shooting_zone(Pose pose) {
-        if (pose.getY() >= Math.abs(pose.getX() - 72) + 72) return true;  // Y >= |x-72| + 72
-        if (pose.getY() <= -Math.abs(pose.getX() - 72) + 72) return true; // Y <= -|x-72| + 72
-        return false;
-    }
-
-    // 선형 보간 함수 (Linear Interpolation)
-    private double mapAngleToServo(double angleRad) {
-        double slope = (HOOD_SERVO_MIN - HOOD_SERVO_MAX) / (HOOD_MIN_ANGLE - HOOD_MAX_ANGLE);
-        return slope * (angleRad - HOOD_MIN_ANGLE) + HOOD_SERVO_MIN;
-    }
-
-    // 속도(in/s)를 모터 속도(Ticks/s)로 변환
-    private double velocityToTicks(double velocityInchesPerSec) {
-        double wheelCircumference = 2 * Math.PI * WHEEL_RADIUS;
-        double revsPerSec = velocityInchesPerSec / wheelCircumference;
-        return revsPerSec * FLYWHEEL_TPR;
-    }
-}
+}*/
