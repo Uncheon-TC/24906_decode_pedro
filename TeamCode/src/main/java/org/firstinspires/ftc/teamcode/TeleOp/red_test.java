@@ -84,6 +84,8 @@ public class red_test extends LinearOpMode {
 
         eat.setDirection(DcMotorSimple.Direction.FORWARD);
 
+        SR.setDirection(DcMotorSimple.Direction.REVERSE);
+
 
         SA.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         SA.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
