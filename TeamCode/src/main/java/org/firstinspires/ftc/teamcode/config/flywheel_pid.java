@@ -66,8 +66,6 @@ public class flywheel_pid extends OpMode {
     @Override
     public void loop() {
 
-        TelemetryPacket packet = new TelemetryPacket();
-
         if (p != lastP || i != lastI || d != lastD || f != lastF) {
             PIDFCoefficients pidfCoefficients = new PIDFCoefficients(p, i, d, f);
             SL.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidfCoefficients);
