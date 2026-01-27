@@ -1,24 +1,9 @@
 package org.firstinspires.ftc.teamcode.Autonomous;
 
 
-import static org.firstinspires.ftc.teamcode.sub_const.pos_const.RED_GOAL;
-import static org.firstinspires.ftc.teamcode.sub_const.shooter_const.FLYWHEEL_TPR;
-import static org.firstinspires.ftc.teamcode.sub_const.shooter_const.HOOD_MAX_ANGLE;
-import static org.firstinspires.ftc.teamcode.sub_const.shooter_const.HOOD_MIN_ANGLE;
-import static org.firstinspires.ftc.teamcode.sub_const.shooter_const.HOOD_SERVO_MAX;
-import static org.firstinspires.ftc.teamcode.sub_const.shooter_const.HOOD_SERVO_MIN;
-import static org.firstinspires.ftc.teamcode.sub_const.shooter_const.SCORE_ANGLE;
-import static org.firstinspires.ftc.teamcode.sub_const.shooter_const.SCORE_HEIGHT;
-import static org.firstinspires.ftc.teamcode.sub_const.shooter_const.SHOOTER_ANGLE_TPR;
-import static org.firstinspires.ftc.teamcode.sub_const.shooter_const.WHEEL_RADIUS;
-import static org.firstinspires.ftc.teamcode.sub_const.shooter_const.flywheel_d;
-import static org.firstinspires.ftc.teamcode.sub_const.shooter_const.flywheel_f;
-import static org.firstinspires.ftc.teamcode.sub_const.shooter_const.flywheel_i;
-import static org.firstinspires.ftc.teamcode.sub_const.shooter_const.flywheel_p;
-import static org.firstinspires.ftc.teamcode.sub_const.shooter_const.shooter_d;
-import static org.firstinspires.ftc.teamcode.sub_const.shooter_const.shooter_f;
-import static org.firstinspires.ftc.teamcode.sub_const.shooter_const.shooter_i;
-import static org.firstinspires.ftc.teamcode.sub_const.shooter_const.shooter_p;
+import static org.firstinspires.ftc.teamcode.sub_const.pos_const.*;
+import static org.firstinspires.ftc.teamcode.sub_const.shooter_const.*;
+
 
 import static java.lang.Math.round;
 
@@ -27,6 +12,7 @@ import com.bylazar.telemetry.TelemetryManager;
 import com.pedropathing.control.PIDFCoefficients;
 import com.pedropathing.control.PIDFController;
 import com.pedropathing.follower.Follower;
+import com.pedropathing.geometry.BezierCurve;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.math.Vector;
@@ -46,7 +32,7 @@ import org.firstinspires.ftc.teamcode.auto_cal.shooter;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.sub_const.servo_pos_const;
 
-@Autonomous(name = "red_test_far", group = "2025-2026 Test_red")
+@Autonomous(name = "red_test_far", group = "2025-2026 Test_red", preselectTeleOp = "red_test")
 public class red_test extends OpMode {
 
     private TelemetryManager panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
@@ -65,12 +51,9 @@ public class red_test extends OpMode {
     private int finalTurretAngle;
 
 
-    private final Pose startPose = new Pose(72,72,Math.toRadians(90));
-    private final Pose middlePose = new Pose(102,102,Math.toRadians(270));
-    private final Pose endPose = new Pose(102, 125, Math.toRadians(180));
 
     private Path go1_path, go2_path;
-    private PathChain chain_test;
+    private PathChain eat_shoot1, eat_shoot2, eat_shoot3, eat_shoot4;
 
 
 
@@ -82,7 +65,7 @@ public class red_test extends OpMode {
 
         follower = Constants.createFollower(hardwareMap);
         buildPaths();
-        follower.setStartingPose(startPose);
+        follower.setStartingPose(RED_CLOSE_START);
 
         //////////////////////////////////////////
 
@@ -176,7 +159,14 @@ public class red_test extends OpMode {
 
             motor_power = controller.run();
             SA.setPower(motor_power);
+
+            double targetMotorVelocity = velocityToTicks(result.launchSpeed);
         }
+
+
+
+
+
 
 
 
@@ -190,40 +180,49 @@ public class red_test extends OpMode {
 
 
     public void buildPaths() { //경로 만들기
-        go1_path = new Path(new BezierLine(startPose, middlePose));
-        go1_path.setLinearHeadingInterpolation(startPose.getHeading(), middlePose.getHeading());
 
-        go2_path = new Path(new BezierLine(middlePose, endPose));
-        go2_path.setLinearHeadingInterpolation(middlePose.getHeading(), endPose.getHeading());
+//        go1_path = new Path(new BezierLine(startPose, middlePose));
+//        go1_path.setLinearHeadingInterpolation(startPose.getHeading(), middlePose.getHeading());
 
-        chain_test = follower.pathBuilder()
-                .addPath(new BezierLine(endPose, middlePose))
-                .setLinearHeadingInterpolation(endPose.getHeading(), middlePose.getHeading())
-                .addPath(new BezierLine(middlePose, startPose))
-                .setLinearHeadingInterpolation(middlePose.getHeading(), startPose.getHeading())
+
+        eat_shoot1 = follower.pathBuilder()
+                .addPath(new BezierCurve(RED_CLOSE_START,
+                        new Pose(79, 80, Math.toRadians(0)),
+                        RED_CLOSE_EAT1))
+                .setLinearHeadingInterpolation(RED_CLOSE_START.getHeading(), RED_CLOSE_EAT1.getHeading())
+
+                .addPath(new BezierLine(RED_CLOSE_EAT1, RED_CLOSE_SHOOT1))
+                .setLinearHeadingInterpolation(RED_CLOSE_EAT1.getHeading(), RED_CLOSE_SHOOT1.getHeading())
                 .build();
+
+
     }
 
     public void autonomousPathUpdate() {  //경로 상태 관리하기
         switch (pathState) {
             case 0:
-                follower.followPath(go1_path);
+                follower.followPath(eat_shoot1);
+
                 setPathState(1);
                 break;
 
             case 1:
                 if (!follower.isBusy()) {
                     follower.followPath(go2_path);
+
+//                    SL.setVelocity(targetMotorVelocity);
+//                    SR.setVelocity(targetMotorVelocity);
+
                     setPathState(2);
                 }
                 break;
 
-            case 2:
-                if (!follower.isBusy()) {
-                    follower.followPath(chain_test);
-                    setPathState(-1);
-                }
-                break;
+//            case 2:
+//                if (!follower.isBusy()) {
+//                    follower.followPath(chain_test);
+//                    setPathState(-1);
+//                }
+//                break;
         }
     }
 
