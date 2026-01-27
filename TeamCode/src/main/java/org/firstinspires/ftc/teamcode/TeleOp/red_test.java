@@ -39,10 +39,6 @@ import org.firstinspires.ftc.teamcode.sub_const.shooter_const;
 public class red_test extends LinearOpMode {
 
     private TelemetryManager ptelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
-    private FieldManager pfield = PanelsField.INSTANCE.getField();
-    private static final Style robotLook = new Style(
-            "", "#3F51B5", 0.75
-    );
 
 
 
@@ -71,8 +67,6 @@ public class red_test extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-
-        pfield.setOffsets(PanelsField.INSTANCE.getPresets().getPEDRO_PATHING());
 
         follower = Constants.createFollower(hardwareMap);
 
@@ -265,7 +259,7 @@ public class red_test extends LinearOpMode {
             ptelemetry.addData("y", follower.getPose().getY());
 
             ptelemetry.update(telemetry);
-            draw();
+
         }
     }
 

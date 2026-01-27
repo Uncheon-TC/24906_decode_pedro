@@ -145,7 +145,7 @@ public class red_test extends OpMode {
 
             double offsetTicks = (result.turretOffset / (2 * Math.PI)) * SHOOTER_ANGLE_TPR * (105.0/25.0);
 
-            finalTurretAngle = (int) round(StaticTargetPosTicks + offsetTicks);
+            finalTurretAngle = (int) round(StaticTargetPosTicks/* + offsetTicks*/);
 
             double clampedAngle = Range.clip(result.hoodAngle, HOOD_MIN_ANGLE, HOOD_MAX_ANGLE);
             double hood_servo_pos = mapAngleToServo(clampedAngle);
@@ -162,6 +162,9 @@ public class red_test extends OpMode {
             SA.setPower(motor_power);
 
             double targetMotorVelocity = velocityToTicks(result.launchSpeed);
+
+            SL.setVelocity(targetMotorVelocity*0.64);
+            SR.setVelocity(targetMotorVelocity*0.64);
         }
 
 
@@ -174,6 +177,8 @@ public class red_test extends OpMode {
         panelsTelemetry.addData("x", follower.getPose().getX());
         panelsTelemetry.addData("y", follower.getPose().getY());
         panelsTelemetry.addData("path", pathState);
+
+        //panelsTelemetry.addData("velo")
 
         panelsTelemetry.update(telemetry);
 
@@ -196,6 +201,16 @@ public class red_test extends OpMode {
                 .setLinearHeadingInterpolation(RED_CLOSE_EAT1.getHeading(), RED_CLOSE_SHOOT1.getHeading())
                 .build();
 
+        eat_shoot2 =  follower.pathBuilder()
+                .addPath(new BezierCurve(RED_CLOSE_SHOOT1,
+                        new Pose(77, 56, Math.toRadians(0)),
+                        RED_CLOSE_EAT2))
+                .setLinearHeadingInterpolation(RED_CLOSE_SHOOT1.getHeading(), RED_CLOSE_EAT2.getHeading())
+
+                .addPath(new BezierLine(RED_CLOSE_EAT2, RED_CLOSE_SHOOT2))
+                .setLinearHeadingInterpolation(RED_CLOSE_EAT2.getHeading(), RED_CLOSE_SHOOT2.getHeading())
+                .build();
+
 
     }
 
@@ -203,16 +218,15 @@ public class red_test extends OpMode {
         switch (pathState) {
             case 0:
                 follower.followPath(eat_shoot1);
-
                 setPathState(1);
                 break;
 
             case 1:
                 if (!follower.isBusy()) {
-                    follower.followPath(go2_path);
+                    follower.followPath(eat_shoot2);
 
-                    SL.setVelocity(targetMotorVelocity);
-                    SR.setVelocity(targetMotorVelocity);
+                    //SL.setVelocity(targetMotorVelocity);
+                    //SR.setVelocity(targetMotorVelocity);
 
                     setPathState(2);
                 }
@@ -243,6 +257,24 @@ public class red_test extends OpMode {
         double wheelCircumference = 2 * Math.PI * WHEEL_RADIUS;
         double revsPerSec = velocityInchesPerSec / wheelCircumference;
         return revsPerSec * FLYWHEEL_TPR;
+    }
+
+    private void eatting() {
+        eat.setPower(1);
+    }
+
+    private void stop_eatting() {
+        eat.setPower(0);
+    }
+
+    private void shoot() {
+        eat.setPower(1);
+        servo_S.setPosition(servo_pos_const.servo_shoot_go);
+    }
+
+    private void shoot_stop() {
+        eat.setPower(0);
+        servo_S.setPosition(servo_pos_const.servo_shoot_block);
     }
 
 
