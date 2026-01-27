@@ -199,7 +199,8 @@ public class red_test extends LinearOpMode {
                 eat.setPower(0);
             }*/
 
-
+            if (gamepad1.dpadLeftWasPressed()) vel_off -= 0.005;
+            if (gamepad1.dpadRightWasPressed()) vel_off += 0.005;
 
 
 
