@@ -244,14 +244,8 @@ public class red_test extends LinearOpMode {
 
 
 
-            ptelemetry.addData("eat Power", eat.getPower());
-            ptelemetry.addData("SL Power", SL.getPower());
-            ptelemetry.addData("SR Power", SR.getPower());
-            ptelemetry.addData("Servo_S Pos", servo_S.getPosition());
-            /*telemetry.addData("Heading (deg)",
-                    imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));*/
-            ptelemetry.addData("target encoder", finalTurretAngle);
-            ptelemetry.addData("current encoder", SA.getCurrentPosition());
+            ptelemetry.addData("velovity_offset", vel_off);
+            ptelemetry.addLine("");
             ptelemetry.addData("curVelo", SL.getVelocity());
             ptelemetry.addData("tarVelo", targetMotorVelocity);
             ptelemetry.addData("curVelo_nonoff", targetMotorVelocity/vel_off);
