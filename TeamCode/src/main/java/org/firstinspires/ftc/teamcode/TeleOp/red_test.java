@@ -1,10 +1,15 @@
 package org.firstinspires.ftc.teamcode.TeleOp;
 
+import static org.firstinspires.ftc.teamcode.pedroPathing.Tuning.draw;
 import static org.firstinspires.ftc.teamcode.sub_const.pos_const.*;
 import static org.firstinspires.ftc.teamcode.sub_const.shooter_const.*;
 
 import static java.lang.Math.round;
 
+import com.bylazar.configurables.annotations.Configurable;
+import com.bylazar.field.FieldManager;
+import com.bylazar.field.PanelsField;
+import com.bylazar.field.Style;
 import com.bylazar.telemetry.PanelsTelemetry;
 import com.bylazar.telemetry.TelemetryManager;
 import com.pedropathing.control.PIDFCoefficients;
@@ -28,10 +33,20 @@ import org.firstinspires.ftc.teamcode.auto_cal.Turret_Tracking;
 import org.firstinspires.ftc.teamcode.sub_const.servo_pos_const;
 import org.firstinspires.ftc.teamcode.sub_const.shooter_const;
 
+@Configurable
+
 @TeleOp(name = "decode 23020_RED", group = "2025-2026 Test OP")
 public class red_test extends LinearOpMode {
 
     private TelemetryManager ptelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
+    private FieldManager pfield = PanelsField.INSTANCE.getField();
+    private static final Style robotLook = new Style(
+            "", "#3F51B5", 0.75
+    );
+
+
+
+    public static double vel_off = 0.64;
 
     private DcMotor FrontLeftMotor, FrontRightMotor, BackLeftMotor, BackRightMotor; //메카넘
     private DcMotor eat, SA;
@@ -56,6 +71,8 @@ public class red_test extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
+
+        pfield.setOffsets(PanelsField.INSTANCE.getPresets().getPEDRO_PATHING());
 
         follower = Constants.createFollower(hardwareMap);
 
@@ -223,8 +240,8 @@ public class red_test extends LinearOpMode {
             if (gamepad1.a && result != null) {
                 targetMotorVelocity = velocityToTicks(result.launchSpeed);
 
-                SL.setVelocity(targetMotorVelocity);
-                SR.setVelocity(targetMotorVelocity);
+                SL.setVelocity(targetMotorVelocity*vel_off);
+                SR.setVelocity(targetMotorVelocity*vel_off);
             } else {
                 SL.setVelocity(0);
                 SR.setVelocity(0);
@@ -242,7 +259,13 @@ public class red_test extends LinearOpMode {
             ptelemetry.addData("current encoder", SA.getCurrentPosition());
             ptelemetry.addData("curVelo", SL.getVelocity());
             ptelemetry.addData("tarVelo", targetMotorVelocity);
+            ptelemetry.addData("curVelo_nonoff", targetMotorVelocity/vel_off);
+
+            ptelemetry.addData("x", follower.getPose().getX());
+            ptelemetry.addData("y", follower.getPose().getY());
+
             ptelemetry.update(telemetry);
+            draw();
         }
     }
 
