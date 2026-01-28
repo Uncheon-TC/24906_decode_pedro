@@ -51,6 +51,8 @@ public class red_test_ver2 extends OpMode {
     private double targetMotorVelocity;
     private boolean segmentStarted = false;
 
+    private double shooter_power = 0;
+
 
 
     private Path first_shoot, eat_to_slide, shoot_from_slide, eat1, eat2, shoot1, shoot2, open_slide, eat3, shoot3, eat4, shoot4;
@@ -96,7 +98,9 @@ public class red_test_ver2 extends OpMode {
         SR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         SL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        SR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        SR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        //SR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         SL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         SR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
@@ -121,7 +125,7 @@ public class red_test_ver2 extends OpMode {
                 .PIDFCoefficients(flywheel_p, flywheel_i, flywheel_d, flywheel_f);
 
         SL.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, flywheel_pidfCoeffiients);
-        SR.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, flywheel_pidfCoeffiients);
+        //SR.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, flywheel_pidfCoeffiients);
 
     }
 
@@ -168,7 +172,8 @@ public class red_test_ver2 extends OpMode {
             double targetMotorVelocity = velocityToTicks(result.launchSpeed);
 
             SL.setVelocity(targetMotorVelocity*0.64);
-            SR.setVelocity(targetMotorVelocity*0.64);
+            shooter_power = SL.getPower();
+            SR.setPower(shooter_power);
         }
 
 

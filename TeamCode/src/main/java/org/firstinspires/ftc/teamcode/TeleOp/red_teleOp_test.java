@@ -1,22 +1,17 @@
 package org.firstinspires.ftc.teamcode.TeleOp;
 
-import static org.firstinspires.ftc.teamcode.pedroPathing.Tuning.draw;
 import static org.firstinspires.ftc.teamcode.sub_const.pos_const.*;
 import static org.firstinspires.ftc.teamcode.sub_const.shooter_const.*;
 
 import static java.lang.Math.round;
 
 import com.bylazar.configurables.annotations.Configurable;
-import com.bylazar.field.FieldManager;
-import com.bylazar.field.PanelsField;
-import com.bylazar.field.Style;
 import com.bylazar.telemetry.PanelsTelemetry;
 import com.bylazar.telemetry.TelemetryManager;
 import com.pedropathing.control.PIDFCoefficients;
 import com.pedropathing.control.PIDFController;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.Pose;
-import com.pedropathing.math.Vector;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -31,12 +26,11 @@ import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 import org.firstinspires.ftc.teamcode.auto_cal.Turret_Tracking;
 import org.firstinspires.ftc.teamcode.sub_const.servo_pos_const;
-import org.firstinspires.ftc.teamcode.sub_const.shooter_const;
 
 @Configurable
 
 @TeleOp(name = "decode 23020_RED", group = "2025-2026 Test OP")
-public class red_test extends LinearOpMode {
+public class red_teleOp_test extends LinearOpMode {
 
     private TelemetryManager ptelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
 
@@ -61,6 +55,7 @@ public class red_test extends LinearOpMode {
     private int finalTurretAngle;
 
     private double targetMotorVelocity;
+    private double shooter_power;
 
     //GoBildaPinpointDriver odo;
 
@@ -113,7 +108,9 @@ public class red_test extends LinearOpMode {
         SR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         SL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        SR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        SR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        //SR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         SL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         SR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
@@ -136,7 +133,7 @@ public class red_test extends LinearOpMode {
                 .PIDFCoefficients(flywheel_p, flywheel_i, flywheel_d, flywheel_f);
 
         SL.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, flywheel_pidfCoeffiients);
-        SR.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, flywheel_pidfCoeffiients);
+        //SR.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, flywheel_pidfCoeffiients);
 
         waitForStart();
 
@@ -234,7 +231,8 @@ public class red_test extends LinearOpMode {
                 targetMotorVelocity = velocityToTicks(result.launchSpeed);
 
                 SL.setVelocity(targetMotorVelocity*vel_off);
-                SR.setVelocity(targetMotorVelocity*vel_off);
+                shooter_power = SL.getPower();
+                SR.setPower(shooter_power);
             } else {
                 SL.setVelocity(0);
                 SR.setVelocity(0);
