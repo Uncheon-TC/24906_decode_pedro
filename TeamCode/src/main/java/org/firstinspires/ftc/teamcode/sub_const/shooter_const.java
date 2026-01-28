@@ -28,4 +28,12 @@ public class shooter_const {
     public static double flywheel_d = 5;
     public static double flywheel_f = 0;
 
+    public static double turret_offset_y(double heading) {
+        return turret_offset * Math.sin(heading);
+    }
+
+    public static double turret_offset_x(double heading) {
+        return turret_offset * Math.cos(heading);
+    }
+
 }

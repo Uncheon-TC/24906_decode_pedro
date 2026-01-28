@@ -32,7 +32,7 @@ import org.firstinspires.ftc.teamcode.auto_cal.shooter;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.sub_const.servo_pos_const;
 
-@Autonomous(name = "red_test_far", group = "2025-2026 Test_red", preselectTeleOp = "red_test")
+@Autonomous(name = "red_test_close", group = "2025-2026 Test_red", preselectTeleOp = "red_test")
 public class red_test extends OpMode {
 
     private TelemetryManager panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
@@ -40,6 +40,7 @@ public class red_test extends OpMode {
     private Follower follower;
     private Timer pathTimer, actionTimer, opmodeTimer;
     private int pathState;
+
 
     private DcMotor eat, SA;
     private DcMotorEx SL, SR;
@@ -53,7 +54,7 @@ public class red_test extends OpMode {
 
 
 
-    private Path go1_path, go2_path;
+    private Path first_shoot, go1_path, go2_path;
     private PathChain eat_shoot1, eat_shoot2, eat_shoot3, eat_shoot4;
 
 
@@ -190,54 +191,93 @@ public class red_test extends OpMode {
 //        go1_path = new Path(new BezierLine(startPose, middlePose));
 //        go1_path.setLinearHeadingInterpolation(startPose.getHeading(), middlePose.getHeading());
 
+        first_shoot = new Path(new BezierLine(RED_CLOSE_START, RED_CLOSE_ST_SHOOT));
+        first_shoot.setLinearHeadingInterpolation(RED_CLOSE_START.getHeading()
+                , RED_CLOSE_ST_SHOOT.getHeading());
+
 
         eat_shoot1 = follower.pathBuilder()
-                .addPath(new BezierCurve(RED_CLOSE_START,
-                        new Pose(79, 80, Math.toRadians(0)),
+                .addPath(new BezierCurve(RED_CLOSE_ST_SHOOT,
+                        new Pose(68, 82, 0),
                         RED_CLOSE_EAT1))
-                .setLinearHeadingInterpolation(RED_CLOSE_START.getHeading(), RED_CLOSE_EAT1.getHeading())
+                .setLinearHeadingInterpolation(RED_CLOSE_ST_SHOOT.getHeading()
+                        , RED_CLOSE_EAT1.getHeading())
 
                 .addPath(new BezierLine(RED_CLOSE_EAT1, RED_CLOSE_SHOOT1))
                 .setLinearHeadingInterpolation(RED_CLOSE_EAT1.getHeading(), RED_CLOSE_SHOOT1.getHeading())
                 .build();
 
-        eat_shoot2 =  follower.pathBuilder()
+        eat_shoot2 = follower.pathBuilder()
                 .addPath(new BezierCurve(RED_CLOSE_SHOOT1,
-                        new Pose(77, 56, Math.toRadians(0)),
+                        new Pose(72, 57, 0),
                         RED_CLOSE_EAT2))
                 .setLinearHeadingInterpolation(RED_CLOSE_SHOOT1.getHeading(), RED_CLOSE_EAT2.getHeading())
-
-                .addPath(new BezierLine(RED_CLOSE_EAT2, RED_CLOSE_SHOOT2))
-                .setLinearHeadingInterpolation(RED_CLOSE_EAT2.getHeading(), RED_CLOSE_SHOOT2.getHeading())
+                .addPath(new BezierLine(RED_CLOSE_EAT2, RED_CLOSE_SHOOT1))
+                .setLinearHeadingInterpolation(RED_CLOSE_EAT2.getHeading(), RED_CLOSE_SHOOT1.getHeading())
                 .build();
+
+
+
 
 
     }
 
     public void autonomousPathUpdate() {  //경로 상태 관리하기
         switch (pathState) {
-            case 0:
-                follower.followPath(eat_shoot1);
+            case 0: //1번경로 시작
+                follower.followPath(first_shoot);
                 setPathState(1);
                 break;
 
-            case 1:
-                if (!follower.isBusy()) {
-                    follower.followPath(eat_shoot2);
-
-                    //SL.setVelocity(targetMotorVelocity);
-                    //SR.setVelocity(targetMotorVelocity);
-
+            case 1:  //1번경로 이동중
+                eatting();
+                if (!follower.isBusy()) {  //1번경로 도착
+                    shoot();
                     setPathState(2);
                 }
                 break;
 
-//            case 2:
-//                if (!follower.isBusy()) {
-//                    follower.followPath(chain_test);
-//                    setPathState(-1);
-//                }
-//                break;
+            case 2: //1번경로끝 대기
+                if (pathTimer.getElapsedTimeSeconds() >= 1) {
+                    shoot_stop();
+                    setPathState(3);
+                }
+                break;
+
+
+            case 3: //2번경로 시작
+                follower.followPath(eat_shoot1);
+                setPathState(4);
+                break;
+
+            case 4: //2번경로 이동중
+                if (!follower.isBusy()) { //2번경로 도착
+                    shoot();
+                    setPathState(5);
+                }
+                break;
+
+            case 5: //2번경로끝 대기
+                if (pathTimer.getElapsedTimeSeconds() >= 1) {
+                    shoot_stop();
+                    setPathState(6);
+                }
+                break;
+
+            case 6: //3번경로 시작
+                follower.followPath(eat_shoot2);
+                setPathState(7);
+                break;
+
+            case 7: //3번경로 이동중
+                if (!follower.isBusy()) {
+                    shoot();
+                    setPathState(8);
+                }
+
+            //case 4:
+             //   if()
+
         }
     }
 
@@ -273,7 +313,7 @@ public class red_test extends OpMode {
     }
 
     private void shoot_stop() {
-        eat.setPower(0);
+        //eat.setPower(0);
         servo_S.setPosition(servo_pos_const.servo_shoot_block);
     }
 

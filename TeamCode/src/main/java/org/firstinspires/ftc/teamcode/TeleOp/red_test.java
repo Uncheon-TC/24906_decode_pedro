@@ -153,8 +153,7 @@ public class red_test extends LinearOpMode {
             double slow = 1 - (0.8 * gamepad1.right_trigger);
 
             if (gamepad1.options) {
-                //imu.resetYaw();
-                //odo.recalibrateIMU();
+                follower.setPose(new Pose(72, 72, follower.getHeading()));
             }
 
             double botHeading_pin = follower.getHeading();
@@ -213,7 +212,7 @@ public class red_test extends LinearOpMode {
 
                 double offsetTicks = (result.turretOffset / (2 * Math.PI)) * SHOOTER_ANGLE_TPR * (105.0/25.0);
 
-                finalTurretAngle = (int) round(StaticTargetPosTicks/* + offsetTicks*/);
+                finalTurretAngle = (int) round(StaticTargetPosTicks/* - offsetTicks*/);
 
                 double clampedAngle = Range.clip(result.hoodAngle, HOOD_MIN_ANGLE, HOOD_MAX_ANGLE);
                 double hood_servo_pos = mapAngleToServo(clampedAngle);
@@ -251,6 +250,7 @@ public class red_test extends LinearOpMode {
 
             ptelemetry.addData("x", follower.getPose().getX());
             ptelemetry.addData("y", follower.getPose().getY());
+            ptelemetry.addData("heading", Math.toDegrees(follower.getHeading()));
 
             ptelemetry.update(telemetry);
 
