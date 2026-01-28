@@ -65,6 +65,7 @@ public class pedro_auto_test extends OpMode {
         panelsTelemetry.addData("y", follower.getPose().getY());
         panelsTelemetry.addData("path", pathState);
 
+
         panelsTelemetry.update(telemetry);
 
     }

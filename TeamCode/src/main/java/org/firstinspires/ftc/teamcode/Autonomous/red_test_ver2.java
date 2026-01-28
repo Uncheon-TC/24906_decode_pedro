@@ -182,6 +182,9 @@ public class red_test_ver2 extends OpMode {
         panelsTelemetry.addData("y", follower.getPose().getY());
         panelsTelemetry.addData("path", pathState);
 
+        panelsTelemetry.addData("turret_target", finalTurretAngle);
+        panelsTelemetry.addData("turret_current", SA.getCurrentPosition());
+
         //panelsTelemetry.addData("velo")
 
         panelsTelemetry.update(telemetry);
