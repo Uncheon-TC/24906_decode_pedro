@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode.sub_const;
 
 public class shooter_const {
 
+    public static double turret_offset = 1.0630; //inch
+
     public static double SCORE_HEIGHT = 26; //inch
     public static double SCORE_ANGLE = Math.toRadians(-30); //rad
     //public static double PASS_THROUGH_POINT_RADIUS = 5; //inch

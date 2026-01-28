@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.auto_cal;
 import static org.firstinspires.ftc.teamcode.sub_const.pos_const.BLUE_GOAL;
 import static org.firstinspires.ftc.teamcode.sub_const.pos_const.RED_GOAL;
 import static org.firstinspires.ftc.teamcode.sub_const.shooter_const.SHOOTER_ANGLE_TPR;
+import static org.firstinspires.ftc.teamcode.sub_const.shooter_const.turret_offset;
 
 import com.pedropathing.geometry.Pose;
 
@@ -11,7 +12,7 @@ public class Turret_Tracking {
     private final double GEAR_RATIO = 105.0/25.0;
 
     public int fix_to_goal_RED(Pose robot_pos) {
-        double dy = RED_GOAL.getY() - robot_pos.getY();
+        double dy = RED_GOAL.getY() - robot_pos.getY() - turret_offset;
         double dx = RED_GOAL.getX() - robot_pos.getX();
         double target_Rad = Math.atan2(dy, dx) - robot_pos.getHeading(); //모두 rad값
         return RadToTicks(target_Rad); //목표 엔코더 tick값 반환
