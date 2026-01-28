@@ -143,8 +143,7 @@ public class red_test extends LinearOpMode {
         while (opModeIsActive()) { //main loop
 
             follower.update(); //current robot pose update
-            Pose current_robot_pos = follower.getPose();  //save to Pose
-            Vector current_robot_vel = follower.getVelocity();
+
 
             double y = -gamepad1.left_stick_y;
             double x = gamepad1.left_stick_x;
@@ -204,11 +203,11 @@ public class red_test extends LinearOpMode {
 
 
 
-            shooter.ShotResult result = shooter.calculateShot(current_robot_pos, RED_GOAL, SCORE_HEIGHT, current_robot_vel, SCORE_ANGLE);
+            shooter.ShotResult result = shooter.calculateShot(follower.getPose(), RED_GOAL, SCORE_HEIGHT, follower.getVelocity(), SCORE_ANGLE);
 
             if (result != null) {
 
-                double StaticTargetPosTicks = tracking.fix_to_goal_RED(current_robot_pos);
+                double StaticTargetPosTicks = tracking.fix_to_goal_RED(follower.getPose());
 
                 double offsetTicks = (result.turretOffset / (2 * Math.PI)) * SHOOTER_ANGLE_TPR * (105.0/25.0);
 
@@ -251,6 +250,11 @@ public class red_test extends LinearOpMode {
             ptelemetry.addData("x", follower.getPose().getX());
             ptelemetry.addData("y", follower.getPose().getY());
             ptelemetry.addData("heading", Math.toDegrees(follower.getHeading()));
+
+            ptelemetry.addData("turret_target_angle", tracking.getTargetHeading(follower.getPose()));
+            ptelemetry.addData("turret_current_angle", SA.getCurrentPosition() * 360 / (537.7 * (105.0 / 25.0)));
+
+                    //1도 틱 = (한바퀴 틱 / 360)
 
             ptelemetry.update(telemetry);
 

@@ -19,6 +19,12 @@ public class Turret_Tracking {
         return RadToTicks(target_Rad); //목표 엔코더 tick값 반환
     }
 
+    public double getTargetHeading(Pose robot_pos) {
+        double dy = RED_GOAL.getY() - robot_pos.getY()/* - shooter_const.turret_offset_y(robot_pos.getHeading())*/;
+        double dx = RED_GOAL.getX() - robot_pos.getX()/* - shooter_const.turret_offset_x(robot_pos.getHeading())*/;
+        return Math.toDegrees(Math.atan2(dy, dx) - robot_pos.getHeading());
+    }
+
     public int fix_to_goal_BLUE(Pose robot_pos) {
         double dy = BLUE_GOAL.getY() - robot_pos.getY() - shooter_const.turret_offset_y(robot_pos.getHeading());
         double dx = BLUE_GOAL.getX() - robot_pos.getX() - shooter_const.turret_offset_x(robot_pos.getHeading());

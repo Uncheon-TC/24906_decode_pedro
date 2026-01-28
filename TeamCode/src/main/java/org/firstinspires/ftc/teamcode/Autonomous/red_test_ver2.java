@@ -53,8 +53,8 @@ public class red_test_ver2 extends OpMode {
 
 
 
-    private Path first_shoot, eat_to_slide, shoot_from_slide, eat1, eat2, shoot1, shoot2, open_slide, eat3, shoot3;
-    private PathChain eat_shoot1, eat_shoot2, eat_shoot3;
+    private Path first_shoot, eat_to_slide, shoot_from_slide, eat1, eat2, shoot1, shoot2, open_slide, eat3, shoot3, eat4, shoot4;
+    private PathChain eat_shoot1, eat_shoot2, eat_shoot3, eat_shoot4;
 
 
 
@@ -185,6 +185,10 @@ public class red_test_ver2 extends OpMode {
         panelsTelemetry.addData("turret_target", finalTurretAngle);
         panelsTelemetry.addData("turret_current", SA.getCurrentPosition());
 
+        panelsTelemetry.addData("target_velo", targetMotorVelocity);
+        panelsTelemetry.addData("current_velo", SL.getVelocity());
+        panelsTelemetry.addData("cueent_vele_nonoff", SL.getVelocity()/0.64);
+
         //panelsTelemetry.addData("velo")
 
         panelsTelemetry.update(telemetry);
@@ -267,6 +271,19 @@ public class red_test_ver2 extends OpMode {
         eat_shoot3 = follower.pathBuilder()
                 .addPath(eat3)
                 .addPath(shoot3)
+                .build();
+
+        eat4 = new Path(new BezierCurve(RED_CLOSE_SHOOT1,
+                new Pose(77, 2, 0),
+                RED_CLOSE_EAT4));
+        eat4.setLinearHeadingInterpolation(RED_CLOSE_SHOOT1.getHeading(), RED_CLOSE_EAT4.getHeading());
+
+        shoot4 = new Path(new BezierLine(RED_CLOSE_SHOOT1, RED_CLOSE_EAT4));
+        shoot4.setLinearHeadingInterpolation(RED_CLOSE_EAT4.getHeading(), RED_CLOSE_SHOOT1.getHeading());
+
+        eat_shoot4 = follower.pathBuilder()
+                .addPath(eat4)
+                .addPath(shoot4)
                 .build();
 
 
@@ -387,6 +404,7 @@ public class red_test_ver2 extends OpMode {
 
             case 17:
                 if (!follower.isBusy()) {
+                    follower.setPose(new Pose(82, 86, 0));
                     shoot();
                     setPathState(18);
                 }
@@ -398,6 +416,23 @@ public class red_test_ver2 extends OpMode {
                     setPathState(19);
                 }
                 break;
+
+            case 19:
+                follower.followPath(eat_shoot4);
+                eat_servo_up();
+                setPathState(20);
+                break;
+
+            case 20:
+                if (!follower.isBusy()) {
+                    eat_servo_down();
+                    shoot();
+                    setPathState(21);
+                }
+                break;
+
+            //case 21:
+
         }
     }
 
