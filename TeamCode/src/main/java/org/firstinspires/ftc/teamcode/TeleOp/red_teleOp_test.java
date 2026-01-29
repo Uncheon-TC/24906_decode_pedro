@@ -37,6 +37,7 @@ public class red_teleOp_test extends LinearOpMode {
 
 
     public static double vel_off = 0.64;
+    public static double turret_off = 0;
 
     private DcMotor FrontLeftMotor, FrontRightMotor, BackLeftMotor, BackRightMotor; //메카넘
     private DcMotor eat, SA;
@@ -65,7 +66,9 @@ public class red_teleOp_test extends LinearOpMode {
 
         follower = Constants.createFollower(hardwareMap);
 
-        follower.setStartingPose(startPose);
+        //follower.setStartingPose(startPose);
+        follower.setStartingPose(follower.getPose());
+
 
         pidfCoefficients = new PIDFCoefficients(shooter_p, shooter_i, shooter_d, shooter_f);
         controller = new PIDFController(pidfCoefficients);
@@ -194,8 +197,11 @@ public class red_teleOp_test extends LinearOpMode {
                 eat.setPower(0);
             }*/
 
-            if (gamepad1.dpadLeftWasPressed()) vel_off -= 0.005;
-            if (gamepad1.dpadRightWasPressed()) vel_off += 0.005;
+            if (gamepad1.dpadDownWasPressed()) vel_off -= 0.005;
+            if (gamepad1.dpadUpWasPressed()) vel_off += 0.005;
+
+            if (gamepad1.dpadRightWasPressed()) turret_off += 3;
+            if (gamepad1.dpadLeftWasPressed()) turret_off -= 3;
 
 
 
@@ -208,7 +214,7 @@ public class red_teleOp_test extends LinearOpMode {
 
                 double offsetTicks = (result.turretOffset / (2 * Math.PI)) * SHOOTER_ANGLE_TPR * (105.0/25.0);
 
-                finalTurretAngle = (int) round(StaticTargetPosTicks/* - offsetTicks*/);
+                finalTurretAngle = (int) round(StaticTargetPosTicks/* - offsetTicks*/ - turret_off);
 
                 double clampedAngle = Range.clip(result.hoodAngle, HOOD_MIN_ANGLE, HOOD_MAX_ANGLE);
                 double hood_servo_pos = mapAngleToServo(clampedAngle);
