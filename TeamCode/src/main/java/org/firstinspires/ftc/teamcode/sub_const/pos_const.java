@@ -23,6 +23,7 @@ public class pos_const {
     public static Pose RED_CLOSE_EAT_SLIDE_CP = new Pose(116, 36, 0);
     public static Pose RED_CLOSE_EAT3_CP = new Pose(68, 29, 0);
     public static Pose RED_CLOSE_EAT4_CP = new Pose(134, 78.2, 0);
+    public static Pose RED_CLOSE_END = new Pose (103, 83.5, Math.toRadians(90));
 
 
 
@@ -43,6 +44,7 @@ public class pos_const {
     public static Pose BLUE_CLOSE_EAT_SLIDE_CP = RED_CLOSE_EAT_SLIDE_CP.mirror();
     public static Pose BLUE_CLOSE_EAT3_CP = RED_CLOSE_EAT3_CP.mirror();
     public static Pose BLUE_CLOSE_EAT4_CP = RED_CLOSE_EAT4_CP.mirror();
+    public static Pose BLUE_CLOSE_END = RED_CLOSE_END.mirror();
 
 
     public static Pose savedAutoPose = new Pose(0,0,0);

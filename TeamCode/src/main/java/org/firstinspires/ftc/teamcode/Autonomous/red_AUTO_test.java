@@ -11,6 +11,7 @@ import static org.firstinspires.ftc.teamcode.sub_const.pos_const.RED_CLOSE_EAT4;
 import static org.firstinspires.ftc.teamcode.sub_const.pos_const.RED_CLOSE_EAT4_CP;
 import static org.firstinspires.ftc.teamcode.sub_const.pos_const.RED_CLOSE_EAT_SLIDE;
 import static org.firstinspires.ftc.teamcode.sub_const.pos_const.RED_CLOSE_EAT_SLIDE_CP;
+import static org.firstinspires.ftc.teamcode.sub_const.pos_const.RED_CLOSE_END;
 import static org.firstinspires.ftc.teamcode.sub_const.pos_const.RED_CLOSE_SHOOT1;
 import static org.firstinspires.ftc.teamcode.sub_const.pos_const.RED_CLOSE_SLIDE_OPEN;
 import static org.firstinspires.ftc.teamcode.sub_const.pos_const.RED_CLOSE_SLIDE_OPEN_CP;
@@ -87,7 +88,7 @@ public class red_AUTO_test extends OpMode {
 
 
 
-    private Path first_shoot, eat_to_slide, shoot_from_slide, eat1, eat2, shoot1, shoot2, open_slide, eat3, shoot3, eat4, shoot4;
+    private Path first_shoot, eat_to_slide, shoot_from_slide, eat1, eat2, shoot1, shoot2, open_slide, eat3, shoot3, eat4, shoot4, to_end;
     private PathChain eat_shoot1, eat_shoot2, eat_shoot3, eat_shoot4;
 
 
@@ -327,7 +328,8 @@ public class red_AUTO_test extends OpMode {
                 .addPath(shoot4)
                 .build();
 
-
+        to_end = new Path(new BezierLine(RED_CLOSE_SHOOT1, RED_CLOSE_END));
+        to_end.setConstantHeadingInterpolation(Math.toRadians(270));
 
 
 
@@ -395,7 +397,7 @@ public class red_AUTO_test extends OpMode {
                 break;
 
             case 9: //열러가서 대기
-                if (pathTimer.getElapsedTimeSeconds() >= 1) {
+                if (pathTimer.getElapsedTimeSeconds() >= 0.8) {
                     setPathState(10);
                 }
                 break;
@@ -493,7 +495,14 @@ public class red_AUTO_test extends OpMode {
                 }
                 break;
 
-            //case 21:
+            case 24:
+                if (pathTimer.getElapsedTimeSeconds() >= 1) setPathState(25);
+                break;
+
+            case 25:
+                follower.followPath(to_end);
+                setPathState(26);
+                break;
 
         }
     }
