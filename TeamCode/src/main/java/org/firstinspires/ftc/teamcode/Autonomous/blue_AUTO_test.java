@@ -18,8 +18,6 @@ import static org.firstinspires.ftc.teamcode.sub_const.pos_const.BLUE_CLOSE_SLID
 import static org.firstinspires.ftc.teamcode.sub_const.pos_const.BLUE_CLOSE_START;
 import static org.firstinspires.ftc.teamcode.sub_const.pos_const.BLUE_CLOSE_ST_SHOOT;
 import static org.firstinspires.ftc.teamcode.sub_const.pos_const.BLUE_GOAL;
-import static org.firstinspires.ftc.teamcode.sub_const.pos_const.RED_CLOSE_END;
-import static org.firstinspires.ftc.teamcode.sub_const.pos_const.RED_CLOSE_SHOOT1;
 import static org.firstinspires.ftc.teamcode.sub_const.shooter_const.FLYWHEEL_TPR;
 import static org.firstinspires.ftc.teamcode.sub_const.shooter_const.HOOD_MAX_ANGLE;
 import static org.firstinspires.ftc.teamcode.sub_const.shooter_const.HOOD_MIN_ANGLE;
@@ -65,7 +63,7 @@ import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.sub_const.pos_const;
 import org.firstinspires.ftc.teamcode.sub_const.servo_pos_const;
 
-@Autonomous(name = "BLUE_test_close_ver2", group = "2025-2026 Test_auto", preselectTeleOp = "decode 23020_BLUE")
+@Autonomous(name = "blue_test_close_ver2", group = "2025-2026 Test_auto", preselectTeleOp = "decode 23020_BLUE")
 public class blue_AUTO_test extends OpMode {
 
     private TelemetryManager panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
@@ -253,7 +251,7 @@ public class blue_AUTO_test extends OpMode {
 
 
 
-        shoot1 = new Path(new BezierLine(BLUE_CLOSE_EAT1,BLUE_CLOSE_SHOOT1));
+        shoot1 = new Path(new BezierLine(BLUE_CLOSE_EAT1, BLUE_CLOSE_SHOOT1));
         shoot1.setLinearHeadingInterpolation(BLUE_CLOSE_EAT1.getHeading(), BLUE_CLOSE_SHOOT1.getHeading());
 
 
@@ -291,8 +289,8 @@ public class blue_AUTO_test extends OpMode {
 
 
         eat_to_slide = new Path(new BezierCurve(BLUE_CLOSE_SHOOT1,
-                BLUE_CLOSE_EAT_SLIDE_CP,
-                BLUE_CLOSE_EAT_SLIDE));
+                        BLUE_CLOSE_EAT_SLIDE_CP,
+                        BLUE_CLOSE_EAT_SLIDE));
         eat_to_slide.setLinearHeadingInterpolation(BLUE_CLOSE_SHOOT1.getHeading(), BLUE_CLOSE_EAT_SLIDE.getHeading());
 
         shoot_from_slide = new Path(new BezierLine(BLUE_CLOSE_EAT_SLIDE, BLUE_CLOSE_SHOOT1));
@@ -304,7 +302,7 @@ public class blue_AUTO_test extends OpMode {
         eat3.setLinearHeadingInterpolation(BLUE_CLOSE_SHOOT1.getHeading(), BLUE_CLOSE_EAT3.getHeading());
 
         shoot3 = new Path(new BezierLine(BLUE_CLOSE_EAT3, BLUE_CLOSE_SHOOT1));
-        //shoot3.setLinearHeadingInterpolation(RED_CLOSE_EAT3.getHeading(), RED_CLOSE_SHOOT1.getHeading());
+        //shoot3.setLinearHeadingInterpolation(BLUE_CLOSE_EAT3.getHeading(), BLUE_CLOSE_SHOOT1.getHeading());
         shoot3.setTangentHeadingInterpolation();
 
         eat_shoot3 = follower.pathBuilder()
@@ -315,15 +313,15 @@ public class blue_AUTO_test extends OpMode {
         eat4 = new Path(new BezierCurve(BLUE_CLOSE_SHOOT1,
                 BLUE_CLOSE_EAT4_CP,
                 BLUE_CLOSE_EAT4));
-        eat4.setConstantHeadingInterpolation(Math.toRadians(270));   //이동시 수정필요 아닌가??
+        eat4.setConstantHeadingInterpolation(Math.toRadians(270));   //이동시 수정필요 아닌가?
         //eat4.setTangentHeadingInterpolation();
 
         shoot4 = new Path(new BezierCurve(BLUE_CLOSE_EAT4,
                 BLUE_CLOSE_EAT4_CP,
                 BLUE_CLOSE_SHOOT1));
-        //shoot4.setLinearHeadingInterpolation(RED_CLOSE_EAT4.getHeading(), RED_CLOSE_SHOOT1.getHeading());
+        //shoot4.setLinearHeadingInterpolation(BLUE_CLOSE_EAT4.getHeading(), BLUE_CLOSE_SHOOT1.getHeading());
         //shoot4.setTangentHeadingInterpolation();
-        shoot4.setConstantHeadingInterpolation(Math.toRadians(270));  //이동시 수정필요 아닌가??
+        shoot4.setConstantHeadingInterpolation(Math.toRadians(270));  //이동시 수정필요 아닌가?
 
         eat_shoot4 = follower.pathBuilder()
                 .addPath(eat4)
@@ -449,7 +447,7 @@ public class blue_AUTO_test extends OpMode {
 
             case 17:
                 if (!follower.isBusy()) {
-                    follower.setPose(new Pose(62, 86, follower.getHeading()));  //이동시 수정필요
+                    //follower.setPose(new Pose(62, 86, follower.getHeading()));  //이동시 수정필요
                     shoot();
                     setPathState(18);
                 }
@@ -490,7 +488,7 @@ public class blue_AUTO_test extends OpMode {
 
             case 23:
                 if (!follower.isBusy()) {
-                    follower.setPose(new Pose(62, 86, follower.getHeading())); //이동시 수정필요
+                    follower.setPose(new Pose(60, 78, follower.getHeading())); //이동시 수정필요
                     eat_servo_down();
                     shoot();
                     setPathState(24);

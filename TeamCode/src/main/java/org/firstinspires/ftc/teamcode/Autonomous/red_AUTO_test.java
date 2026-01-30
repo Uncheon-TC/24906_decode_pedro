@@ -488,7 +488,7 @@ public class red_AUTO_test extends OpMode {
 
             case 23:
                 if (!follower.isBusy()) {
-                    follower.setPose(new Pose(82, 86, follower.getHeading())); //이동시 수정필요
+                    follower.setPose(new Pose(84, 78, follower.getHeading())); //이동시 수정필요
                     eat_servo_down();
                     shoot();
                     setPathState(24);

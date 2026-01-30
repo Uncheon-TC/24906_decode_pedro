@@ -62,6 +62,8 @@ public class blue_teleOp_test extends LinearOpMode {
 
     private int shooter_status = 0;
 
+    private double drive_heading = 0;
+
     //GoBildaPinpointDriver odo;
 
 
@@ -148,6 +150,8 @@ public class blue_teleOp_test extends LinearOpMode {
 
             follower.update(); //current robot pose update
 
+            drive_heading = follower.getHeading() + Math.PI;
+
             if (gamepad1.backWasPressed()) follower.setPose(savedAutoPose);
 
 
@@ -158,10 +162,10 @@ public class blue_teleOp_test extends LinearOpMode {
             double slow = 1 - (0.8 * gamepad1.right_trigger);
 
             if (gamepad1.options) {
-                follower.setPose(new Pose(72, 72, follower.getHeading()));
+                follower.setPose(new Pose(72, 72, Math.toRadians(180)));
             }
 
-            double botHeading_pin = follower.getHeading();
+            double botHeading_pin = drive_heading;
 
             double rotX = x * Math.cos(-botHeading_pin) - y * Math.sin(-botHeading_pin);
             double rotY = x * Math.sin(-botHeading_pin) + y * Math.cos(-botHeading_pin);
