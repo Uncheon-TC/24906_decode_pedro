@@ -114,7 +114,7 @@ public class blue_AUTO_test extends OpMode {
         SR  = hardwareMap.get(DcMotorEx.class, "SR");
         SA = hardwareMap.dcMotor.get("SA");
 
-        eat.setDirection(DcMotorSimple.Direction.FORWARD);
+        eat.setDirection(DcMotorSimple.Direction.REVERSE);
 
         SR.setDirection(DcMotorSimple.Direction.REVERSE);
 

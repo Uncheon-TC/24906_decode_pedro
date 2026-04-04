@@ -98,7 +98,7 @@ public class red_teleOp_test extends LinearOpMode {
         odo.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD,
                 GoBildaPinpointDriver.EncoderDirection.FORWARD);*/
 
-        eat.setDirection(DcMotorSimple.Direction.FORWARD);
+        eat.setDirection(DcMotorSimple.Direction.REVERSE);
 
         SR.setDirection(DcMotorSimple.Direction.REVERSE);
 
