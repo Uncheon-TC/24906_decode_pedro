@@ -27,6 +27,7 @@ import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.auto_cal.Turret_Tracking;
 import org.firstinspires.ftc.teamcode.sub_const.pos_const;
 import org.firstinspires.ftc.teamcode.sub_const.servo_pos_const;
+import org.firstinspires.ftc.teamcode.sub_const.shooter_const;
 
 @Configurable
 
@@ -209,8 +210,8 @@ public class red_teleOp_test extends LinearOpMode {
             if (gamepad1.dpadRightWasPressed()) turret_off += 6;
             if (gamepad1.dpadLeftWasPressed()) turret_off -= 6;*/
 
-            if (gamepad2.dpadDownWasPressed()) vel_off -= 0.005;
-            if (gamepad2.dpadUpWasPressed()) vel_off += 0.005;
+            if (gamepad2.dpadDownWasPressed()) vel_off -= 0.01; // 기존 0.005
+            if (gamepad2.dpadUpWasPressed()) vel_off += 0.01; // 기존 0.005
 
             if (gamepad2.dpadRightWasPressed()) {
                 turret_off += 31;
@@ -251,6 +252,12 @@ public class red_teleOp_test extends LinearOpMode {
                 controller.updatePosition(currentPos);
 
                 motor_power = controller.run();
+
+                // 데드밴드 적용 (틱 기준) 테스트중임
+                if (Math.abs(finalTurretAngle - currentPos) < shooter_const.shooter_deadband) {
+                    motor_power = 0; // 목표 근처에서 떨림 방지
+                }
+
                 SA.setPower(motor_power);
 
 
@@ -289,9 +296,10 @@ public class red_teleOp_test extends LinearOpMode {
 
 
 
-
-            ptelemetry.addData("curVelo", SL.getVelocity());
             ptelemetry.addData("tarVelo", targetMotorVelocity);
+            ptelemetry.addData("vel_off", vel_off);
+            ptelemetry.addData("tarVelo*vel_off", targetMotorVelocity*vel_off);
+            ptelemetry.addData("curVelo", SL.getVelocity());
             ptelemetry.addData("curVelo_nonoff", SL.getVelocity()/vel_off);
 
             ptelemetry.addData("x", follower.getPose().getX());

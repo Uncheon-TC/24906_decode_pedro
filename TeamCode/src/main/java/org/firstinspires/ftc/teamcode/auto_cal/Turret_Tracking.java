@@ -34,14 +34,20 @@ public class Turret_Tracking {
     }
 
     int RadToTicks(double Rad){
-        while (Rad > Math.PI) {
-            Rad -= 2 * Math.PI;
+        // -90도(-π/2)에서 450도(5π/2)까지의 범위로 정규화
+        double MIN_ANGLE_RAD = -Math.PI / 2;      // -90도
+        double MAX_ANGLE_RAD = 5 * Math.PI / 2;   // 450도
+        double FULL_ROTATION = 2 * Math.PI;
+
+        // -π/2 ~ 5π/2 범위로 정규화
+        while (Rad < MIN_ANGLE_RAD) {
+            Rad += FULL_ROTATION;
         }
-        while (Rad < -Math.PI) {
-            Rad += 2 * Math.PI;
+        while (Rad > MAX_ANGLE_RAD) {
+            Rad -= FULL_ROTATION;
         }
 
-        double ticks = (Rad / (2 * Math.PI)) * SHOOTER_ANGLE_TPR * GEAR_RATIO;
+        double ticks = (Rad / FULL_ROTATION) * SHOOTER_ANGLE_TPR * GEAR_RATIO;
 
         return (int) Math.round(ticks);
     }
