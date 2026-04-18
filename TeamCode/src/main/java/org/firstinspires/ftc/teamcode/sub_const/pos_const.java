@@ -8,12 +8,18 @@ public class pos_const {
     public static Pose RED_GOAL = new Pose(144,144);
     public static Pose BLUE_GOAL = RED_GOAL.mirror();
 
-    public static Pose RED_CLOSE_START = new Pose(121, 122, 0.66);
-    public static Pose RED_CLOSE_ST_SHOOT = new Pose(96, 95, 0.66);
+    public static Pose RED_CLOSE_START = new Pose(120, 122, Math.toRadians(41));
+    public static Pose RED_CLOSE_ST_SHOOT = new Pose(96, 95, Math.toRadians(41));
     public static Pose RED_CLOSE_EAT1 = new Pose(120, 83.5, Math.toRadians(0));
     public static Pose RED_CLOSE_EAT2 = new Pose(124,59.5, Math.toRadians(0));
     public static Pose RED_CLOSE_EAT3 = new Pose(124, 35.5, Math.toRadians(0));
     public static Pose RED_CLOSE_EAT4 = new Pose(136, 16.5, Math.toRadians(0));
+
+    public static Pose RED_CLOSE_GATE1 = new Pose(120,60, Math.toRadians(39));
+    public static Pose RED_CLOSE_GATE2 = new Pose(133,60, Math.toRadians(39));
+    public static Pose RED_CLOSE_GATE3 = new Pose(130,57, Math.toRadians(39));
+
+
     public static Pose RED_CLOSE_EAT_SLIDE = new Pose (130, 60.8, 0.654);
     public static Pose RED_CLOSE_SLIDE_OPEN = new Pose(131.5, 68, Math.toRadians(270));
     public static Pose RED_CLOSE_SHOOT1 = new Pose(84, 83.5, Math.toRadians(0));

@@ -30,14 +30,14 @@ import org.firstinspires.ftc.teamcode.sub_const.servo_pos_const;
 
 @Configurable
 
-@TeleOp(name = "decode 23020_BLUE", group = "2025-2026 Test OP")
+@TeleOp(name = "BLUE TeleOp", group = "2025-2026 Test OP")
 public class blue_teleOp_test extends LinearOpMode {
 
     private TelemetryManager ptelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
 
 
 
-    public static double vel_off = 0.64;
+    public static double vel_off = 0.65;
     public static double turret_off = 0;
     public static double off_changed = 0;
 
@@ -241,7 +241,9 @@ public class blue_teleOp_test extends LinearOpMode {
 
                 double offsetTicks = (result.turretOffset / (2 * Math.PI)) * SHOOTER_ANGLE_TPR * (105.0/25.0);
 
-                finalTurretAngle = (int) round(StaticTargetPosTicks/* - offsetTicks*/ - turret_off);
+                finalTurretAngle = (int) round(StaticTargetPosTicks - offsetTicks - turret_off); // 이동중 슈팅
+
+//이동중 슈팅 끄기                finalTurretAngle = (int) round(StaticTargetPosTicks/* - offsetTicks*/ - turret_off);
 
                 double clampedAngle = Range.clip(result.hoodAngle, HOOD_MIN_ANGLE, HOOD_MAX_ANGLE);
                 double hood_servo_pos = mapAngleToServo(clampedAngle);
