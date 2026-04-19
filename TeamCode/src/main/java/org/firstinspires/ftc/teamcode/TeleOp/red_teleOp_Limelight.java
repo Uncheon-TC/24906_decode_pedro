@@ -281,18 +281,57 @@ public class red_teleOp_Limelight extends LinearOpMode {
 
 
     // ════════════════════════════════════════════════════════════════
+    // ★ DECODE 2025-2026 필드 AprilTag 정보
+    // ════════════════════════════════════════════════════════════════
+    // DECODE 시즌 기준:
+    //   Tag ID 24 → RED GOAL (로컬라이제이션 전용)
+    //   Tag ID 25 → BLUE GOAL (로컬라이제이션 전용)
+    //   그 외 오벨리스크 태그 → 로컬라이제이션에 사용 금지
+    //
+    // RED GOAL AprilTag(ID=24) 필드 좌표 (FTC 필드 좌표계 기준, inches)
+    // FTC 필드: 144×144 inches, 원점(0,0) = 필드 중앙
+    // Red Goal은 필드 RED 진영 쪽 벽 중앙에 위치
+    // 아래 값은 공식 필드 도면 기준 — 실제 필드에서 측정값으로 보정 권장
+    private static final int    RED_GOAL_TAG_ID = 24;
+
+    // ════════════════════════════════════════════════════════════════
+    // ★ Limelight 카메라 장착 오프셋 (로봇 중심 기준, inches)
+    // ════════════════════════════════════════════════════════════════
+    // 현재는 로봇 정면 중앙에 장착 → 오프셋 측정 후 아래 값 수정
+    // 기준: 로봇 앞쪽(+X), 왼쪽(+Y), 위쪽(+Z)
+    // 측정 방법: 로봇 중심에서 카메라 렌즈까지 줄자로 측정
+    private static final double CAM_OFFSET_X = 0.0; // 앞쪽 오프셋 (inches) ← 직접 측정 후 입력
+    private static final double CAM_OFFSET_Y = 0.0; // 좌우 오프셋 (inches) ← 직접 측정 후 입력
+    // (높이는 2D 로컬라이제이션에서 무시)
+
+    // ════════════════════════════════════════════════════════════════
     // ★ Limelight AprilTag 위치 하드리셋 메서드
     // ════════════════════════════════════════════════════════════════
     /**
-     * gamepad2.back 버튼 입력 시 호출됩니다.
+     * [gamepad2.back] 버튼 입력 시 호출됩니다.
      *
-     * Limelight MegaTag2가 감지한 AprilTag 기반 절대 좌표로
+     * DECODE 시즌 Red Goal AprilTag(ID=24)를 기준으로
+     * Limelight MegaTag2가 추정한 필드 절대 좌표를 사용해
      * follower의 현재 Pose를 즉시 덮어씁니다. (하드리셋)
      *
-     * 리셋 이후에는 별도 처리 없이 follower.update()가 매 루프
-     * 핀포인트 오도메트리 기반으로 위치를 계속 추적합니다.
+     * 리셋 이후에는 follower.update()가 자동으로
+     * 핀포인트 오도메트리 기반 추적을 재개합니다.
      *
-     * AprilTag를 감지하지 못하면 Pose를 변경하지 않고 실패 메시지만 출력합니다.
+     * 감지 실패 시 Pose를 변경하지 않고 실패 이유를 텔레메트리에 출력합니다.
+     *
+     * ─ 좌표계 변환 설명 ─────────────────────────────────
+     * Limelight MegaTag2  : 미터(m), FTC WPILib 좌표계 (원점 = 필드 중앙)
+     * PedroPathing        : inches, 원점 = 필드 왼쪽 하단 코너
+     *
+     * 변환:
+     *   pedroX = (limelightX_m * 39.3701) + 72   // 원점 이동
+     *   pedroY = (limelightY_m * 39.3701) + 72
+     *   pedroYaw = limelightYaw (라디안, 그대로 사용)
+     *
+     * 카메라 오프셋 보정 (로봇 정면 중앙 장착):
+     *   robotX = cameraX - cos(yaw)*CAM_OFFSET_X + sin(yaw)*CAM_OFFSET_Y
+     *   robotY = cameraY - sin(yaw)*CAM_OFFSET_X - cos(yaw)*CAM_OFFSET_Y
+     * ────────────────────────────────────────────────────
      */
     private void hardResetPoseWithLimelight() {
         if (!limelightAvailable) {
@@ -301,6 +340,7 @@ public class red_teleOp_Limelight extends LinearOpMode {
             return;
         }
 
+        // MegaTag2 결과 가져오기
         LimelightMegaTag2 mt2 = limelight.getLatestRobotOrientationUpdate();
 
         if (mt2 == null) {
@@ -315,20 +355,39 @@ public class red_teleOp_Limelight extends LinearOpMode {
             return;
         }
 
-        // Limelight 좌표(미터, WPILib 기준) → PedroPathing 좌표(inches)
-        // ※ 좌표계가 다를 경우 아래 변환 수정 필요
-        double resetX   = mt2.pose.position.x * 39.3701; // m → inches
-        double resetY   = mt2.pose.position.y * 39.3701;
-        double resetYaw = mt2.pose.orientation.getYaw();  // 라디안
+        // ★ DECODE 시즌: Tag ID 24 (Red Goal)만 로컬라이제이션에 사용
+        // 오벨리스크 태그는 위치가 고정되지 않으므로 반드시 필터링
+        boolean redGoalTagSeen = false;
+        for (var fiducial : mt2.fiducialResults) {
+            if (fiducial.fiducialId == RED_GOAL_TAG_ID) {
+                redGoalTagSeen = true;
+                break;
+            }
+        }
+        if (!redGoalTagSeen) {
+            llResetStatus  = "실패: Tag#24(Red Goal) 미감지";
+            llResetSuccess = false;
+            return;
+        }
+
+        // ─── 좌표 변환 ──────────────────────────────────────────────
+        // 1) Limelight(미터, 필드 중앙 원점) → PedroPathing(inches, 왼쪽하단 원점)
+        double camX_in  = mt2.pose.position.x * 39.3701 + 72.0; // m→in, 원점 이동
+        double camY_in  = mt2.pose.position.y * 39.3701 + 72.0;
+        double yaw      = mt2.pose.orientation.getYaw(); // 라디안
+
+        // 2) 카메라 오프셋 보정 → 로봇 중심 좌표 계산
+        // (현재 CAM_OFFSET이 0이면 보정 없음 — 실측 후 값 입력 권장)
+        double robotX = camX_in - Math.cos(yaw) * CAM_OFFSET_X + Math.sin(yaw) * CAM_OFFSET_Y;
+        double robotY = camY_in - Math.sin(yaw) * CAM_OFFSET_X - Math.cos(yaw) * CAM_OFFSET_Y;
 
         // ★ 핀포인트 오도메트리 기준 위치를 AprilTag 측정값으로 즉시 덮어쓰기
-        follower.setPose(new Pose(resetX, resetY, resetYaw));
+        follower.setPose(new Pose(robotX, robotY, yaw));
         // → 다음 루프부터 follower.update()가 이 위치를 기점으로 핀포인트 추적 재개
 
         llResetTimeMs  = System.currentTimeMillis();
         llResetSuccess = true;
-        llResetStatus  = String.format("성공! (%.1f\", %.1f\") 태그 %d개",
-                resetX, resetY, mt2.fiducialResults.length);
+        llResetStatus  = String.format("성공! Tag#24 → (%.1f\", %.1f\")", robotX, robotY);
     }
 
 
