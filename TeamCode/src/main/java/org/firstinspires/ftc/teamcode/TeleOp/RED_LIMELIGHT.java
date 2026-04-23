@@ -49,8 +49,8 @@ import org.firstinspires.ftc.teamcode.sub_const.shooter_const;
 
 @Configurable
 
-@TeleOp(name = "RED TeleOp Limelight", group = "2025-2026 Test OP")
-public class red_teleOp_Limelight extends LinearOpMode {
+@TeleOp(name = "TELEOP_RED_LIMELIGHT", group = "2025-2026 Test OP")
+public class RED_LIMELIGHT extends LinearOpMode {
 
     private TelemetryManager ptelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
 
@@ -338,8 +338,7 @@ public class red_teleOp_Limelight extends LinearOpMode {
                     case 1:
                         targetMotorVelocity = velocityToTicks(result.launchSpeed);
 
-                        SL
-                                .setVelocity(targetMotorVelocity*vel_off);
+                        SL.setVelocity(targetMotorVelocity*vel_off);
                         shooter_power = SL.getPower();
                         SR.setPower(shooter_power);
 
@@ -395,6 +394,7 @@ public class red_teleOp_Limelight extends LinearOpMode {
         double revsPerSec = velocityInchesPerSec / wheelCircumference;
         return revsPerSec * FLYWHEEL_TPR;
     }
+
 // ========Limelight pose를 Pedro Pose로 바꾸는 함수====
     private Pose getLimelightResetPose() {
         LLResult result = limelight.getLatestResult();

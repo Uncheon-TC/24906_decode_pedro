@@ -2,11 +2,8 @@ package org.firstinspires.ftc.teamcode.Autonomous;
 
 
 import static org.firstinspires.ftc.teamcode.sub_const.pos_const.RED_CLOSE_EAT1;
-import static org.firstinspires.ftc.teamcode.sub_const.pos_const.RED_CLOSE_EAT1_CP;
 import static org.firstinspires.ftc.teamcode.sub_const.pos_const.RED_CLOSE_EAT2;
 import static org.firstinspires.ftc.teamcode.sub_const.pos_const.RED_CLOSE_EAT2_CP;
-import static org.firstinspires.ftc.teamcode.sub_const.pos_const.RED_CLOSE_EAT3;
-import static org.firstinspires.ftc.teamcode.sub_const.pos_const.RED_CLOSE_EAT3_CP;
 import static org.firstinspires.ftc.teamcode.sub_const.pos_const.RED_CLOSE_EAT4;
 import static org.firstinspires.ftc.teamcode.sub_const.pos_const.RED_CLOSE_EAT4_CP;
 import static org.firstinspires.ftc.teamcode.sub_const.pos_const.RED_CLOSE_EAT_SLIDE;
@@ -66,8 +63,8 @@ import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.sub_const.pos_const;
 import org.firstinspires.ftc.teamcode.sub_const.servo_pos_const;
 
-@Autonomous(name = "red_close_v2", group = "2025-2026 Test_auto", preselectTeleOp = "RED TeleOp Limelight")
-public class red_AUTO_ver2 extends OpMode {
+@Autonomous(name = "AUTO_RED_CLOSE_18", group = "2025-2026 Test_auto", preselectTeleOp = "TELEOP_RED_LIMELIGHT")
+public class RED_CLOSE_18 extends OpMode {
 
     private TelemetryManager panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
 

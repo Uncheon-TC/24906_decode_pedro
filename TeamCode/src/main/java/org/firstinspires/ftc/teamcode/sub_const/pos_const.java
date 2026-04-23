@@ -52,6 +52,21 @@ public class pos_const {
     public static Pose BLUE_CLOSE_EAT4_CP = RED_CLOSE_EAT4_CP.mirror();
     public static Pose BLUE_CLOSE_END = RED_CLOSE_END.mirror();
 
+// RED_FAR_15
+    public static Pose RED_FAR_15_START = new Pose(96, 7, Math.toRadians(0));
+    public static Pose RED_FAR_15_EAT1 = new Pose(130,35, Math.toRadians(0));
+    public static Pose RED_FAR_15_EAT1_CP = new Pose(93,39, Math.toRadians(0));
+    public static Pose RED_FAR_15_SHOOT = new Pose(96, 7, Math.toRadians(0));
+    public static Pose RED_FAR_15_EAT2 = new Pose(133,7,Math.toRadians(0));
+    public static Pose RED_FAR_15_EAT2_CP = new Pose(123,10,Math.toRadians(0));
+    public static Pose RED_FAR_15_EAT2_Again = new Pose(133,12, Math.toRadians(0));
+    public static Pose RED_FAR_15_EAT3 = new Pose(133, 9, Math.toRadians(40));
+    public static Pose RED_FAR_15_EAT3_Again = new Pose(133,40,Math.toRadians(40));
+    public static Pose RED_FAR_END = new Pose(100,7, Math.toRadians(0));
+
+
+
+
 
     public static Pose savedAutoPose = new Pose(0,0,0);
 
