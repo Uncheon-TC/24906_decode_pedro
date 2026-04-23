@@ -434,7 +434,5 @@ public class RED_FAR_15 extends OpMode {
         return Math.abs(target - current) <= 50;
     }
     // ==============
-
-
 }
 
