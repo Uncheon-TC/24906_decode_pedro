@@ -23,8 +23,8 @@ public class Turret_Tracking {
     public int fix_to_goal_BLUE(Pose robot_pos) {
         double dy = BLUE_GOAL.getY() - robot_pos.getY()/* - shooter_const.turret_offset_y(robot_pos.getHeading())*/;
         double dx = BLUE_GOAL.getX() - robot_pos.getX()/* - shooter_const.turret_offset_x(robot_pos.getHeading())*/;
-        double target_Rad = Math.atan2(dy, dx) - robot_pos.getHeading(); //모두 rad값 반환 ㅇㅇ
-        return RadToTicks(target_Rad);
+        double target_Rad = Math.atan2(dy, dx) - robot_pos.getHeading() + 2*Math.PI; //모두 rad값 반환 ㅇㅇ
+        return BlueRadToTicks(target_Rad);
     }
 
     public double getTargetHeading(Pose robot_pos) {
@@ -37,6 +37,24 @@ public class Turret_Tracking {
         // -90도(-π/2)에서 450도(5π/2)까지의 범위로 정규화
         double MIN_ANGLE_RAD = -Math.PI / 2;      // -90도
         double MAX_ANGLE_RAD = 5 * Math.PI / 2;   // 450도
+        double FULL_ROTATION = 2 * Math.PI;
+
+        // -π/2 ~ 5π/2 범위로 정규화
+        while (Rad < MIN_ANGLE_RAD) {
+            Rad += FULL_ROTATION;
+        }
+        while (Rad > MAX_ANGLE_RAD) {
+            Rad -= FULL_ROTATION;
+        }
+
+        double ticks = (Rad / FULL_ROTATION) * SHOOTER_ANGLE_TPR * GEAR_RATIO;
+
+        return (int) Math.round(ticks);
+    }
+    int BlueRadToTicks(double Rad){
+        // -90도(-π/2)에서 450도(5π/2)까지의 범위로 정규화
+        double MIN_ANGLE_RAD = -Math.PI / 2;      // -90도
+        double MAX_ANGLE_RAD =  5*Math.PI / 2;   // 450도
         double FULL_ROTATION = 2 * Math.PI;
 
         // -π/2 ~ 5π/2 범위로 정규화
