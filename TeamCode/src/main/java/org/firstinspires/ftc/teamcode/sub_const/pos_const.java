@@ -16,13 +16,13 @@ public class pos_const {
     public static Pose RED_CLOSE_EAT4 = new Pose(136, 16.5, Math.toRadians(0));
 
     public static Pose RED_CLOSE_GATE1 = new Pose(128,57, Math.toRadians(40)); // 게이트열러대기
-    public static Pose RED_CLOSE_GATE2 = new Pose(133,61, Math.toRadians(40)); // 게이트여는위치
+    public static Pose RED_CLOSE_GATE2 = new Pose(135,61, Math.toRadians(40)); // 게이트여는위치
     public static Pose RED_CLOSE_GATE3 = new Pose(130,57, Math.toRadians(40));
 
 
     public static Pose RED_CLOSE_EAT_SLIDE = new Pose (130, 60.8, 0.654);
     public static Pose RED_CLOSE_SLIDE_OPEN = new Pose(131.5, 68, Math.toRadians(270));
-    public static Pose RED_CLOSE_SHOOT1 = new Pose(90, 80, Math.toRadians(0));
+    public static Pose RED_CLOSE_SHOOT1 = new Pose(92, 78, Math.toRadians(0));
     public static Pose RED_CLOSE_EAT1_CP = new Pose(68, 82, 0);
     public static Pose RED_CLOSE_EAT2_CP = new Pose(85, 60, 0);
     public static Pose RED_CLOSE_SLIDE_OPEN_CP = new Pose(113, 61, 0);
@@ -53,16 +53,16 @@ public class pos_const {
     public static Pose BLUE_CLOSE_END = RED_CLOSE_END.mirror();
 
 // RED_FAR_15
-    public static Pose RED_FAR_15_START = new Pose(96, 7, Math.toRadians(0));
-    public static Pose RED_FAR_15_EAT1 = new Pose(130,35, Math.toRadians(0));
+    public static Pose RED_FAR_15_START = new Pose(95, 8, Math.toRadians(0));
+    public static Pose RED_FAR_15_EAT1 = new Pose(128,35, Math.toRadians(0));
     public static Pose RED_FAR_15_EAT1_CP = new Pose(93,39, Math.toRadians(0));
-    public static Pose RED_FAR_15_SHOOT = new Pose(96, 7, Math.toRadians(0));
-    public static Pose RED_FAR_15_EAT2 = new Pose(133,7,Math.toRadians(0));
+    public static Pose RED_FAR_15_SHOOT = new Pose(94, 12, Math.toRadians(0));
+    public static Pose RED_FAR_15_EAT2 = new Pose(130,8,Math.toRadians(0));
     public static Pose RED_FAR_15_EAT2_CP = new Pose(123,10,Math.toRadians(0));
-    public static Pose RED_FAR_15_EAT2_Again = new Pose(133,12, Math.toRadians(0));
-    public static Pose RED_FAR_15_EAT3 = new Pose(133, 9, Math.toRadians(40));
-    public static Pose RED_FAR_15_EAT3_Again = new Pose(133,40,Math.toRadians(40));
-    public static Pose RED_FAR_END = new Pose(100,7, Math.toRadians(0));
+    public static Pose RED_FAR_15_EAT2_Again = new Pose(130,12, Math.toRadians(0));
+    public static Pose RED_FAR_15_EAT3 = new Pose(130, 8, Math.toRadians(40));
+    public static Pose RED_FAR_15_EAT3_Again = new Pose(130,40,Math.toRadians(40));
+    public static Pose RED_FAR_END = new Pose(110,8, Math.toRadians(0));
 
 
 
