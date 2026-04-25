@@ -67,11 +67,11 @@ import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.sub_const.pos_const;
 import org.firstinspires.ftc.teamcode.sub_const.servo_pos_const;
 
-@Autonomous(name = "AUTO_BLUE_FAR_15", group = "2025-2026 Test_auto", preselectTeleOp = "BLUE TeleOp")
+@Autonomous(name = "AUTO_BLUE_FAR_15", group = "2025-2026 Test_auto", preselectTeleOp = "TELEOP_BLUE_LIMELIGHT")
 public class BLUE_FAR_15 extends OpMode {
 
     private TelemetryManager panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
-    private static final double SHOOTER_POWER_RATIO = 0.65; //속도 오프셋
+    private static final double SHOOTER_POWER_RATIO = 0.66; //속도 오프셋
     private Follower follower;
     private Timer pathTimer, actionTimer, opmodeTimer, segmentTime;
     private int pathState;
@@ -186,10 +186,9 @@ public class BLUE_FAR_15 extends OpMode {
     @Override
     public void loop() {
         follower.update();
+
         Pose current_robot_pos = follower.getPose();  //save to Pose
         Vector current_robot_vel = follower.getVelocity();
-
-        autonomousPathUpdate();
 
 
         shooter.ShotResult result = shooter.calculateShot(current_robot_pos, BLUE_GOAL, SCORE_HEIGHT, current_robot_vel, SCORE_ANGLE);
@@ -222,6 +221,7 @@ public class BLUE_FAR_15 extends OpMode {
             SR.setPower(shooter_power);
         }
 
+        autonomousPathUpdate();
 
         pos_const.savedAutoPose = follower.getPose();
 
@@ -385,8 +385,62 @@ public class BLUE_FAR_15 extends OpMode {
                 if(pathTimer.getElapsedTimeSeconds()>=1){
                     shoot_stop();
                     stop_eatting();
-                    follower.followPath(to_end);
+                    follower.followPath(eat3);
                     setPathState(17);
+                }
+                break;
+            case 17: // 쓸어담기
+                eatting();
+                if(!follower.isBusy()){
+                    follower.followPath(eat3again);
+                    setPathState(18);
+                }
+                break;
+            case 18: // 쓸어담기
+                if(!follower.isBusy()){
+                    follower.followPath(shoot3);
+                    setPathState(19);
+                }
+                break;
+            case 19: // 슈팅포지션으로
+                if(!follower.isBusy()){
+                    shoot();
+                    setPathState(20);
+                }
+                break;
+            case 20: //슈팅
+                if(pathTimer.getElapsedTimeSeconds()>=1){
+                    shoot_stop();
+                    stop_eatting();
+                    follower.followPath(eat3);
+                    setPathState(21);
+                }
+                break;
+            case 21: // 쓸어담기
+                eatting();
+                if(!follower.isBusy()){
+                    follower.followPath(eat3again);
+                    setPathState(22);
+                }
+                break;
+            case 22: // 쓸어담기
+                if(!follower.isBusy()){
+                    follower.followPath(shoot3);
+                    setPathState(23);
+                }
+                break;
+            case 23: // 슈팅포지션으로
+                if(!follower.isBusy()){
+                    shoot();
+                    setPathState(24);
+                }
+                break;
+            case 24: //슈팅
+                if(pathTimer.getElapsedTimeSeconds()>=1){
+                    shoot_stop();
+                    stop_eatting();
+                    follower.followPath(to_end);
+                    setPathState(25);
                 }
                 break;
         }

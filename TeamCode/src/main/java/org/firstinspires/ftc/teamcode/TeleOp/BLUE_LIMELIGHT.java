@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.TeleOp;
 
+import static org.firstinspires.ftc.teamcode.sub_const.pos_const.BLUE_GOAL;
 import static org.firstinspires.ftc.teamcode.sub_const.pos_const.RED_GOAL;
 import static org.firstinspires.ftc.teamcode.sub_const.pos_const.savedAutoPose;
 import static org.firstinspires.ftc.teamcode.sub_const.shooter_const.FLYWHEEL_TPR;
@@ -49,8 +50,8 @@ import org.firstinspires.ftc.teamcode.sub_const.shooter_const;
 
 @Configurable
 
-@TeleOp(name = "TELEOP_RED_LIMELIGHT", group = "2025-2026 Test OP")
-public class RED_LIMELIGHT extends LinearOpMode {
+@TeleOp(name = "TELEOP_BLUE_LIMELIGHT", group = "2025-2026 Test OP")
+public class BLUE_LIMELIGHT extends LinearOpMode {
 
     private TelemetryManager ptelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
 
@@ -78,8 +79,9 @@ public class RED_LIMELIGHT extends LinearOpMode {
     private double shooter_power;
 
     private int shooter_status = 0;
+    private double drive_heading = 0;
 
-//라임라이트 추가
+    //라임라이트 추가
     private Limelight3A limelight;
     private boolean lastGamepad2Options = false;
 
@@ -162,8 +164,8 @@ public class RED_LIMELIGHT extends LinearOpMode {
         servo_leftlift = hardwareMap.servo.get("servo_leftlift");
         servo_leftlift.setPosition(servo_pos_const.servo_leftlift_down);
 
-        servo_rightlift = hardwareMap.servo.get("servo_rightlift");
-        servo_rightlift.setPosition(servo_pos_const.servo_rightlift_down);
+       servo_rightlift = hardwareMap.servo.get("servo_rightlift");
+       servo_rightlift.setPosition(servo_pos_const.servo_rightlift_down);
 
 
         com.qualcomm.robotcore.hardware.PIDFCoefficients flywheel_pidfCoeffiients
@@ -206,6 +208,8 @@ public class RED_LIMELIGHT extends LinearOpMode {
 
             follower.update(); //current robot pose update
 
+            drive_heading = follower.getHeading() + Math.PI;
+
             if (gamepad1.backWasPressed()) follower.setPose(savedAutoPose);
 
 
@@ -216,10 +220,10 @@ public class RED_LIMELIGHT extends LinearOpMode {
             double slow = 1 - (0.8 * gamepad1.right_trigger);
 
             if (gamepad2.options) {
-                follower.setPose(new Pose(72, 72, follower.getHeading()));
+                follower.setPose(new Pose(72, 72, Math.toRadians(180)));
             }
 
-            double botHeading_pin = follower.getHeading();
+            double botHeading_pin = drive_heading ;
 
             double rotX = x * Math.cos(-botHeading_pin) - y * Math.sin(-botHeading_pin);
             double rotY = x * Math.sin(-botHeading_pin) + y * Math.cos(-botHeading_pin);
@@ -253,7 +257,7 @@ public class RED_LIMELIGHT extends LinearOpMode {
 
             if (gamepad1.y) eat.setPower(0);
 
-            if (gamepad1.dpad_left){
+           if (gamepad1.dpad_left){
                 servo_leftlift.setPosition(servo_pos_const.Servo_leftlift_up);
                 servo_rightlift.setPosition(servo_pos_const.servo_rightlift_up);
             }
@@ -261,7 +265,11 @@ public class RED_LIMELIGHT extends LinearOpMode {
             if (gamepad1.dpad_right){
                 servo_leftlift.setPosition(servo_pos_const.servo_leftlift_down);
                 servo_rightlift.setPosition(servo_pos_const.servo_rightlift_down);
-            }
+           }
+
+
+
+
 
 
             /*if (gamepad1.left_bumper) {
@@ -285,7 +293,7 @@ public class RED_LIMELIGHT extends LinearOpMode {
                 follower.setPose(new Pose(
                         follower.getPose().getX(),
                         follower.getPose().getY(),
-                        follower.getHeading() + Math.toRadians(1)  // 1도씩 증가
+                        follower.getHeading() + Math.toRadians(2)  // 2도씩 증가
 
                 ));
             }
@@ -294,11 +302,10 @@ public class RED_LIMELIGHT extends LinearOpMode {
                 follower.setPose(new Pose(
                         follower.getPose().getX(),
                         follower.getPose().getY(),
-                        follower.getHeading() - Math.toRadians(1)  // 1도씩 감소
+                        follower.getHeading() - Math.toRadians(2)  // 2도씩 감소
 
                 ));
             }
-
 
             if (gamepad2.aWasPressed()) {
                 follower.setPose(new Pose(
@@ -307,7 +314,6 @@ public class RED_LIMELIGHT extends LinearOpMode {
                         Math.toRadians(90)
                 ));
             }
-
 
             /*if (gamepad2.aWasPressed()) {
                 SA.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -318,11 +324,11 @@ public class RED_LIMELIGHT extends LinearOpMode {
 
 
 
-            shooter.ShotResult result = shooter.calculateShot(follower.getPose(), RED_GOAL, SCORE_HEIGHT, follower.getVelocity(), SCORE_ANGLE);
+            shooter.ShotResult result = shooter.calculateShot(follower.getPose(), BLUE_GOAL, SCORE_HEIGHT, follower.getVelocity(), SCORE_ANGLE);
 
             if (result != null) {
 
-                double StaticTargetPosTicks = tracking.fix_to_goal_RED(follower.getPose());
+                double StaticTargetPosTicks = tracking.fix_to_goal_BLUE(follower.getPose());
 
                 double offsetTicks = (result.turretOffset / (2 * Math.PI)) * SHOOTER_ANGLE_TPR * (105.0/25.0);
 
@@ -406,7 +412,7 @@ public class RED_LIMELIGHT extends LinearOpMode {
             telemetry.addData("Y", follower.getPose().getY());
             telemetry.addData("Heading", Math.toDegrees(follower.getHeading()));
 
-                    //1도 틱 = (한바퀴 틱 / 360)
+            //1도 틱 = (한바퀴 틱 / 360)
 
             ptelemetry.update(telemetry);
 
@@ -432,7 +438,7 @@ public class RED_LIMELIGHT extends LinearOpMode {
         return revsPerSec * FLYWHEEL_TPR;
     }
 
-// ========Limelight pose를 Pedro Pose로 바꾸는 함수====
+    // ========Limelight pose를 Pedro Pose로 바꾸는 함수====
     private Pose getLimelightResetPose() {
         LLResult result = limelight.getLatestResult();
 

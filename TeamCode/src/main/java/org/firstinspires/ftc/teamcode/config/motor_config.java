@@ -18,13 +18,15 @@ import java.lang.reflect.Field;
 @TeleOp(name = "config_motor", group = "config")
 public class motor_config extends OpMode {
 
-    Servo servo_s, servo_hood, servo_eat;
+    Servo servo_s, servo_hood, servo_eat, servo_leftlift , servo_rightlift;
     DcMotor eat, SL, SR, SA;
     private TelemetryManager panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
 
     public static double tar_servo_s = 0.5;
     public static double tar_servo_hood = 0.5;
     public static double tar_servo_eat = 0.5;
+    public static double tar_sevro_leftlift = 0 ;
+    public static double tar_sevro_rightlift = 0 ;
     public static int tar_eat = 0;
     public static int tar_SLR = 0;
     public static int tar_SA = 0;
@@ -36,10 +38,15 @@ public class motor_config extends OpMode {
         servo_s = hardwareMap.servo.get("servo_S");
         servo_hood = hardwareMap.servo.get("servo_H");
         servo_eat = hardwareMap.servo.get("servo_EAT");
+       servo_leftlift = hardwareMap.servo.get("servo_leftlift");
+       servo_rightlift = hardwareMap.servo.get("servo_rightlift");
+
 
         servo_s.setPosition(tar_servo_s);
         servo_hood.setPosition(tar_servo_hood);
         servo_eat.setPosition(tar_servo_eat);
+        servo_leftlift.setPosition(tar_sevro_leftlift);
+        servo_rightlift.setPosition(tar_sevro_rightlift);
 
         eat = hardwareMap.dcMotor.get("eat");
         SL = hardwareMap.dcMotor.get("SL");
@@ -69,6 +76,8 @@ public class motor_config extends OpMode {
         servo_s.setPosition(tar_servo_s);
         servo_hood.setPosition(tar_servo_hood);
         servo_eat.setPosition(tar_servo_eat);
+        servo_leftlift.setPosition(tar_sevro_leftlift);
+        servo_rightlift.setPosition(tar_sevro_rightlift);
 
         eat.setTargetPosition(tar_eat);
         SL.setTargetPosition(tar_SLR);
@@ -93,6 +102,8 @@ public class motor_config extends OpMode {
         panelsTelemetry.addData("target_SR", tar_SLR);
         panelsTelemetry.addData("current_SA", SA.getCurrentPosition());
         panelsTelemetry.addData("target_SA", tar_SA);
+        panelsTelemetry.addData("target leftlift", tar_sevro_leftlift);
+        panelsTelemetry.addData("target rightlift",tar_sevro_rightlift);
 
         panelsTelemetry.update(telemetry);
     }
