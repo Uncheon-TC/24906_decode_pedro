@@ -17,7 +17,10 @@ public class pos_const {
     public static Pose RED_CLOSE_GATE1 = new Pose(128,57, Math.toRadians(40)); // 게이트열러대기
     public static Pose RED_CLOSE_GATE2 = new Pose(134,63, Math.toRadians(40)); // 게이트여는위치
     public static Pose RED_CLOSE_END = new Pose (108, 83.5, Math.toRadians(90));
-
+    public static Pose RED_CLOSE_GATE1_V2 = new Pose(128,63, Math.toRadians(20)); // 게이트열러대기
+    public static Pose RED_CLOSE_GATE2_V2 = new Pose(134,56,Math.toRadians(60));
+    public static Pose RED_CLOSE_GATE2_CP_V2 = new Pose(130,56,Math.toRadians(60));
+    public static Pose RED_CLOSE_EAT2_TF = new Pose(123,57,Math.toRadians(0));
 
 //===================================================================================
 // RED 예전 코드에서 쓰는 좌표

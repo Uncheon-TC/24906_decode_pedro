@@ -162,10 +162,8 @@ public class BLUE_LIMELIGHT extends LinearOpMode {
         servo_hood.setPosition(servo_pos_const.servo_hood_min);  //기본위치 찾기
 
         servo_leftlift = hardwareMap.servo.get("servo_leftlift");
-        servo_leftlift.setPosition(servo_pos_const.servo_leftlift_down);
 
        servo_rightlift = hardwareMap.servo.get("servo_rightlift");
-       servo_rightlift.setPosition(servo_pos_const.servo_rightlift_down);
 
 
         com.qualcomm.robotcore.hardware.PIDFCoefficients flywheel_pidfCoeffiients
