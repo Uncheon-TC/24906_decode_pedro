@@ -250,7 +250,7 @@ public class RED_CLOSE_18_v2 extends OpMode {
         eat2.setLinearHeadingInterpolation(RED_CLOSE_SHOOT1.getHeading(), RED_CLOSE_GATE1.getHeading());
 
         gateopen = new Path(new BezierCurve(RED_CLOSE_GATE1_V2, RED_CLOSE_GATE2_CP_V2, RED_CLOSE_GATE2_V2));
-        gateopen.setLinearHeadingInterpolation(RED_CLOSE_GATE1.getHeading(), RED_CLOSE_GATE2.getHeading());
+        gateopen.setLinearHeadingInterpolation(RED_CLOSE_GATE1_V2.getHeading(), RED_CLOSE_GATE2_V2.getHeading());
 
         shoot2 = new Path(new BezierLine(RED_CLOSE_GATE2, RED_CLOSE_SHOOT1));
         shoot2.setLinearHeadingInterpolation(RED_CLOSE_GATE2.getHeading(), RED_CLOSE_SHOOT1.getHeading());
@@ -313,15 +313,15 @@ public class RED_CLOSE_18_v2 extends OpMode {
             case 7:
                 eatting();
                 if(pathTimer.getElapsedTimeSeconds()>0.5){
-                    setPathState(8);
-                }
-                break;
-            case 8:
-                if (!follower.isBusy()){
                     follower.followPath(gateopen);
                     setPathState(9);
                 }
                 break;
+            /*case 8:
+                if (!follower.isBusy()){
+                    setPathState(9);
+                }
+                break;*/
             case 9:
                 if(!follower.isBusy()){
                     setPathState(10);
@@ -330,7 +330,7 @@ public class RED_CLOSE_18_v2 extends OpMode {
             case 10:
                 if (pathTimer.getElapsedTimeSeconds()>=1.5) {
                     follower.followPath(shoot2);
-                    setPathState(8);
+                    setPathState(11);
                 }
                 break;
             case 11:
