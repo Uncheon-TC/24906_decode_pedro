@@ -59,7 +59,7 @@ import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.sub_const.pos_const;
 import org.firstinspires.ftc.teamcode.sub_const.servo_pos_const;
 
-@Autonomous(name = "AUTO_RED_CLOSE_18", group = "2025-2026 Test_auto", preselectTeleOp = "TELEOP_RED_LIMELIGHT")
+@Autonomous(name = "AUTO_RED_CLOSE_18_V1", group = "2025-2026 Test_auto", preselectTeleOp = "TELEOP_RED_LIMELIGHT")
 public class RED_CLOSE_18 extends OpMode {
 
     private TelemetryManager panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();

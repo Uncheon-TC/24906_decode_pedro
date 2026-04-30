@@ -59,7 +59,7 @@ import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.sub_const.pos_const;
 import org.firstinspires.ftc.teamcode.sub_const.servo_pos_const;
 
-@Autonomous(name = "AUTO_RED_CLOSE_18_V2", group = "2025-2026 Test_auto", preselectTeleOp = "TELEOP_RED_LIMELIGHT")
+@Autonomous(name = "X", group = "2025-2026 Test_auto", preselectTeleOp = "TELEOP_RED_LIMELIGHT")
 public class RED_CLOSE_18_v2 extends OpMode {
 
     private TelemetryManager panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
@@ -246,14 +246,14 @@ public class RED_CLOSE_18_v2 extends OpMode {
         shoot1 = new Path(new BezierLine(RED_CLOSE_EAT2, RED_CLOSE_SHOOT1));
         shoot1.setLinearHeadingInterpolation(RED_CLOSE_EAT2.getHeading(), RED_CLOSE_SHOOT1.getHeading());
 
-        eat2 = new Path(new BezierLine(RED_CLOSE_SHOOT1, RED_CLOSE_GATE1));
+        eat2 = new Path(new BezierLine(RED_CLOSE_SHOOT1, RED_CLOSE_GATE1_V2));
         eat2.setLinearHeadingInterpolation(RED_CLOSE_SHOOT1.getHeading(), RED_CLOSE_GATE1.getHeading());
 
         gateopen = new Path(new BezierCurve(RED_CLOSE_GATE1_V2, RED_CLOSE_GATE2_CP_V2, RED_CLOSE_GATE2_V2));
         gateopen.setLinearHeadingInterpolation(RED_CLOSE_GATE1_V2.getHeading(), RED_CLOSE_GATE2_V2.getHeading());
 
-        shoot2 = new Path(new BezierLine(RED_CLOSE_GATE2, RED_CLOSE_SHOOT1));
-        shoot2.setLinearHeadingInterpolation(RED_CLOSE_GATE2.getHeading(), RED_CLOSE_SHOOT1.getHeading());
+        shoot2 = new Path(new BezierLine(RED_CLOSE_GATE2_V2, RED_CLOSE_SHOOT1));
+        shoot2.setLinearHeadingInterpolation(RED_CLOSE_GATE2_V2.getHeading(), RED_CLOSE_SHOOT1.getHeading());
 
         eat3 = new Path(new BezierLine(RED_CLOSE_SHOOT1, RED_CLOSE_EAT1));
         eat3.setLinearHeadingInterpolation(RED_CLOSE_SHOOT1.getHeading(), RED_CLOSE_EAT1.getHeading());

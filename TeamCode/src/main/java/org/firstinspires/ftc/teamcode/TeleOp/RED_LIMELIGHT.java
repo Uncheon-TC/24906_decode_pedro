@@ -316,8 +316,6 @@ public class RED_LIMELIGHT extends LinearOpMode {
 
 
 
-
-
             shooter.ShotResult result = shooter.calculateShot(follower.getPose(), RED_GOAL, SCORE_HEIGHT, follower.getVelocity(), SCORE_ANGLE);
 
             if (result != null) {

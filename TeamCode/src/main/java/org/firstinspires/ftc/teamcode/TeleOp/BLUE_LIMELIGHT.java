@@ -291,7 +291,7 @@ public class BLUE_LIMELIGHT extends LinearOpMode {
                 follower.setPose(new Pose(
                         follower.getPose().getX(),
                         follower.getPose().getY(),
-                        follower.getHeading() + Math.toRadians(2)  // 2도씩 증가
+                        follower.getHeading() + Math.toRadians(1)  // 2도씩 증가
 
                 ));
             }
@@ -300,7 +300,7 @@ public class BLUE_LIMELIGHT extends LinearOpMode {
                 follower.setPose(new Pose(
                         follower.getPose().getX(),
                         follower.getPose().getY(),
-                        follower.getHeading() - Math.toRadians(2)  // 2도씩 감소
+                        follower.getHeading() - Math.toRadians(1)  // 2도씩 감소
 
                 ));
             }
@@ -317,9 +317,6 @@ public class BLUE_LIMELIGHT extends LinearOpMode {
                 SA.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                 SA.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             }*/
-
-
-
 
 
             shooter.ShotResult result = shooter.calculateShot(follower.getPose(), BLUE_GOAL, SCORE_HEIGHT, follower.getVelocity(), SCORE_ANGLE);
