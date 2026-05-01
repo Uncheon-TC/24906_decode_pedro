@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Autonomous;
 
 
+import static org.firstinspires.ftc.teamcode.sub_const.pos_const.BLUE_CLOSE_EAT1;
 import static org.firstinspires.ftc.teamcode.sub_const.pos_const.BLUE_CLOSE_EAT2;
 import static org.firstinspires.ftc.teamcode.sub_const.pos_const.BLUE_CLOSE_EAT2_CP;
 import static org.firstinspires.ftc.teamcode.sub_const.pos_const.BLUE_CLOSE_GATE1_V2;
