@@ -7,6 +7,9 @@ import static org.firstinspires.ftc.teamcode.sub_const.pos_const_pre.blue_close_
 import static org.firstinspires.ftc.teamcode.sub_const.pos_const_pre.blue_eat_first;
 import static org.firstinspires.ftc.teamcode.sub_const.pos_const_pre.blue_eat_second;
 import static org.firstinspires.ftc.teamcode.sub_const.pos_const_pre.blue_eat_second_CP;
+import static org.firstinspires.ftc.teamcode.sub_const.pos_const_pre.blue_open_eat;
+import static org.firstinspires.ftc.teamcode.sub_const.pos_const_pre.blue_open_eat_wait;
+import static org.firstinspires.ftc.teamcode.sub_const.pos_const_pre.blue_out;
 import static org.firstinspires.ftc.teamcode.sub_const.shooter_const.FLYWHEEL_TPR;
 import static org.firstinspires.ftc.teamcode.sub_const.shooter_const.HOOD_MAX_ANGLE;
 import static org.firstinspires.ftc.teamcode.sub_const.shooter_const.HOOD_MIN_ANGLE;
@@ -77,8 +80,8 @@ public class Blue_Auto_P_30_D extends OpMode {
 
 
 
-    private Path FS,E1,SS,E2,TS,OandE;
-    private PathChain First_Shoot;
+    private Path FS,E1,SS,E2,TS,OPwait,OP,OUT,RS;
+    private PathChain First_Shoot,Second_Shoot;
 
 
 
@@ -91,7 +94,7 @@ public class Blue_Auto_P_30_D extends OpMode {
 
         follower = Constants.createFollower(hardwareMap);
         buildPaths();
-        follower.setStartingPose(BLUE_CLOSE_START);
+        follower.setStartingPose(blue_close_start);
 
         //////////////////////////////////////////
 
@@ -232,22 +235,167 @@ public class Blue_Auto_P_30_D extends OpMode {
         E1 = new Path(new BezierLine(blue_close_shot,blue_eat_first));
         E1.setLinearHeadingInterpolation(blue_close_shot.getHeading(),blue_eat_first.getHeading());
 
-
         SS = new Path(new BezierLine(blue_eat_first,blue_close_shot));
         SS.setLinearHeadingInterpolation(blue_eat_first.getHeading(),blue_close_shot.getHeading());
 
         First_Shoot = follower.pathBuilder()
-                .addPath(FS)
                 .addPath(E1)
+                .addPath(SS)
                 .build();
 
         E2 = new Path(new BezierCurve(blue_close_shot,blue_eat_second_CP,blue_eat_second));
         E2.setLinearHeadingInterpolation(blue_close_shot.getHeading(),blue_eat_second.getHeading());
+
+        TS = new Path(new BezierLine(blue_eat_second,blue_close_shot));
+        TS.setLinearHeadingInterpolation(blue_eat_second.getHeading(),blue_close_shot.getHeading());
+
+        Second_Shoot = follower.pathBuilder()
+                .addPath(E2)
+                .addPath(TS)
+                .build();
+
+        OPwait = new Path(new BezierLine(blue_close_shot,blue_open_eat_wait));
+        OPwait.setLinearHeadingInterpolation(blue_close_shot.getHeading(),blue_open_eat_wait.getHeading());
+
+        OP = new Path(new BezierLine(blue_open_eat_wait,blue_open_eat));
+        OP.setLinearHeadingInterpolation(blue_open_eat_wait.getHeading(),blue_open_eat.getHeading());
+
+        RS = new Path(new BezierLine(blue_open_eat,blue_close_shot));
+        RS.setLinearHeadingInterpolation(blue_open_eat.getHeading(),blue_close_shot.getHeading());
+
+        OUT = new Path(new BezierLine(blue_close_shot,blue_out));
+        OUT.setLinearHeadingInterpolation(blue_close_shot.getHeading(),blue_out.getHeading());
     }
 
     public void autonomousPathUpdate() {  //경로 상태 관리하기
         switch (pathState) {
+            case 0:
+                follower.followPath(FS);
+                setPathState(1);
+                break;
 
+            case 1:
+                eatting();
+                if (!follower.isBusy()){
+                    shoot();
+                    setPathState(2);
+                }
+                break;
+
+            case 2:
+                if (pathTimer.getElapsedTimeSeconds()>=1){
+                    shoot_stop();
+                    setPathState(3);
+                }
+                break;
+
+            case 3:
+                follower.followPath(First_Shoot);
+                setPathState(4);
+                break;
+
+            case 4:
+                if (!follower.isBusy()){
+                    shoot();
+                    setPathState(5);
+                }
+                break;
+
+            case 5:
+                if (pathTimer.getElapsedTimeSeconds()>=1){
+                    shoot_stop();
+                    setPathState(6);
+                }
+                break;
+
+            case 6:
+                follower.followPath(Second_Shoot);
+                setPathState(7);
+                break;
+
+            case 7:
+                if (!follower.isBusy()){
+                    shoot();
+                    setPathState(8);
+                }
+                break;
+
+            case 8:
+                if (pathTimer.getElapsedTimeSeconds()>=1){
+                    shoot_stop();
+                    setPathState(9);
+                }
+                break;
+
+            case 9:
+                follower.followPath(OPwait);
+                setPathState(10);
+                break;
+
+            case 10:
+                if (!follower.isBusy()){
+                    follower.followPath(OP);
+                    setPathState(11);
+                }
+                break;
+
+            case 11:
+                if(pathTimer.getElapsedTimeSeconds()>=2){
+                    follower.followPath(RS);
+                    setPathState(12);
+                }
+                break;
+
+            case 12:
+                if (!follower.isBusy()){
+                    shoot();
+                    setPathState(13);
+                }
+                break;
+
+            case 13:
+                if (pathTimer.getElapsedTimeSeconds()>=1){
+                    shoot_stop();
+                    setPathState(14);
+                }
+
+            case 14:
+                follower.followPath(OPwait);
+                setPathState(15);
+                break;
+
+            case 15:
+                if (!follower.isBusy()){
+                    follower.followPath(OP);
+                    setPathState(16);
+                }
+                break;
+
+            case 16:
+                if(pathTimer.getElapsedTimeSeconds()>=2){
+                    follower.followPath(RS);
+                    setPathState(17);
+                }
+                break;
+
+            case 17:
+                if (!follower.isBusy()){
+                    shoot();
+                    setPathState(18);
+                }
+                break;
+
+            case 18:
+                if (pathTimer.getElapsedTimeSeconds()>=1){
+                    shoot_stop();
+                    setPathState(19);
+                }
+                break;
+
+            case 19:
+                follower.followPath(OUT);
+                setPathState(20);
+                break;
 
         }
     }
