@@ -94,8 +94,8 @@ public class BLUE_Priemier extends LinearOpMode {
 
         follower = Constants.createFollower(hardwareMap);
 
-        //follower.setStartingPose(startPose);
-        follower.setStartingPose(new Pose(72, 72, Math.toRadians(90)));
+        // 오토에서 저장된 포즈가 있다면 가져오고, 없으면 기본 포즈 사용
+        follower.setStartingPose(savedAutoPose);
 
 
         pidfCoefficients = new PIDFCoefficients(shooter_p, shooter_i, shooter_d, shooter_f);
