@@ -67,11 +67,11 @@ import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.sub_const.pos_const;
 import org.firstinspires.ftc.teamcode.sub_const.servo_pos_const;
 
-@Autonomous(name = "AUTO_BLUE_FAR_15", group = "2025-2026 Test_auto", preselectTeleOp = "TELEOP_BLUE_LIMELIGHT")
+@Autonomous(name = "AUTO_BLUE_FAR_15_30s", group = "2026 Priemiere", preselectTeleOp = "TELEOP_BLUE_Priemier")
 public class BLUE_FAR_15 extends OpMode {
 
     private TelemetryManager panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
-    private static final double SHOOTER_POWER_RATIO = 0.66; //속도 오프셋
+    private static final double SHOOTER_POWER_RATIO = 0.67; //속도 오프셋
     private Follower follower;
     private Timer pathTimer, actionTimer, opmodeTimer, segmentTime;
     private int pathState;

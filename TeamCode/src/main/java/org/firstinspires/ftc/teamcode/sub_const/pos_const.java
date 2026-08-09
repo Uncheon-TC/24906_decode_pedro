@@ -74,8 +74,8 @@ public class pos_const {
     public static Pose RED_FAR_15_EAT2 = new Pose(131,8,Math.toRadians(0));  // 블루 131,8 미러
     public static Pose RED_FAR_15_EAT2_CP = new Pose(123,10,Math.toRadians(0));
     public static Pose RED_FAR_15_EAT2_Again = new Pose(131,12, Math.toRadians(0));
-    public static Pose RED_FAR_15_EAT3 = new Pose(130.5, 8, Math.toRadians(40));
-    public static Pose RED_FAR_15_EAT3_Again = new Pose(131,33,Math.toRadians(40)); //기존 - 130,40
+    public static Pose RED_FAR_15_EAT3 = new Pose(128.5, 8, Math.toRadians(40));
+    public static Pose RED_FAR_15_EAT3_Again = new Pose(128.5,33,Math.toRadians(40)); //기존 - 130,40
     public static Pose RED_FAR_END = new Pose(110,8, Math.toRadians(0));
 
     // BLUE_FAR
@@ -92,7 +92,7 @@ public class pos_const {
 
 
 
-    public static Pose savedAutoPose = new Pose(0,0,0);
+    public static Pose savedAutoPose = new Pose(72,72,Math.toRadians(90));
 
 
 }

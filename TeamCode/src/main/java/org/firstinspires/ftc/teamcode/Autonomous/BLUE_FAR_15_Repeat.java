@@ -1,16 +1,16 @@
 package org.firstinspires.ftc.teamcode.Autonomous;
 
-import static org.firstinspires.ftc.teamcode.sub_const.pos_const.RED_FAR_15_EAT1;
-import static org.firstinspires.ftc.teamcode.sub_const.pos_const.RED_FAR_15_EAT1_CP;
-import static org.firstinspires.ftc.teamcode.sub_const.pos_const.RED_FAR_15_EAT2;
-import static org.firstinspires.ftc.teamcode.sub_const.pos_const.RED_FAR_15_EAT2_Again;
-import static org.firstinspires.ftc.teamcode.sub_const.pos_const.RED_FAR_15_EAT2_CP;
-import static org.firstinspires.ftc.teamcode.sub_const.pos_const.RED_FAR_15_EAT3;
-import static org.firstinspires.ftc.teamcode.sub_const.pos_const.RED_FAR_15_EAT3_Again;
-import static org.firstinspires.ftc.teamcode.sub_const.pos_const.RED_FAR_15_SHOOT;
-import static org.firstinspires.ftc.teamcode.sub_const.pos_const.RED_FAR_15_START;
-import static org.firstinspires.ftc.teamcode.sub_const.pos_const.RED_FAR_END;
-import static org.firstinspires.ftc.teamcode.sub_const.pos_const_original.RED_GOAL;
+import static org.firstinspires.ftc.teamcode.sub_const.pos_const.BLUE_FAR_15_EAT1;
+import static org.firstinspires.ftc.teamcode.sub_const.pos_const.BLUE_FAR_15_EAT1_CP;
+import static org.firstinspires.ftc.teamcode.sub_const.pos_const.BLUE_FAR_15_EAT2;
+import static org.firstinspires.ftc.teamcode.sub_const.pos_const.BLUE_FAR_15_EAT2_Again;
+import static org.firstinspires.ftc.teamcode.sub_const.pos_const.BLUE_FAR_15_EAT2_CP;
+import static org.firstinspires.ftc.teamcode.sub_const.pos_const.BLUE_FAR_15_EAT3;
+import static org.firstinspires.ftc.teamcode.sub_const.pos_const.BLUE_FAR_15_EAT3_Again;
+import static org.firstinspires.ftc.teamcode.sub_const.pos_const.BLUE_FAR_15_SHOOT;
+import static org.firstinspires.ftc.teamcode.sub_const.pos_const.BLUE_FAR_15_START;
+import static org.firstinspires.ftc.teamcode.sub_const.pos_const.BLUE_FAR_END;
+import static org.firstinspires.ftc.teamcode.sub_const.pos_const.BLUE_GOAL;
 import static org.firstinspires.ftc.teamcode.sub_const.shooter_const.FLYWHEEL_TPR;
 import static org.firstinspires.ftc.teamcode.sub_const.shooter_const.HOOD_MAX_ANGLE;
 import static org.firstinspires.ftc.teamcode.sub_const.shooter_const.HOOD_MIN_ANGLE;
@@ -56,8 +56,8 @@ import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.sub_const.pos_const;
 import org.firstinspires.ftc.teamcode.sub_const.servo_pos_const;
 
-@Autonomous(name = "AUTO_RED_FAR_15_30s", group = "2026 Priemiere", preselectTeleOp = "TELEOP_RED_Priemier")
-public class RED_FAR_15 extends OpMode {
+@Autonomous(name = "AUTO_BLUE_FAR_15_60s", group = "2026 Priemiere", preselectTeleOp = "TELEOP_BLUE_Priemier")
+public class BLUE_FAR_15_Repeat extends OpMode {
 
     private TelemetryManager panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
     private static final double SHOOTER_POWER_RATIO = 0.67; //속도 오프셋
@@ -104,7 +104,7 @@ public class RED_FAR_15 extends OpMode {
 
         follower = Constants.createFollower(hardwareMap);
         buildPaths();
-        follower.setStartingPose(RED_FAR_15_START);
+        follower.setStartingPose(BLUE_FAR_15_START);
 
         //////////////////////////////////////////
 
@@ -174,16 +174,20 @@ public class RED_FAR_15 extends OpMode {
 
     @Override
     public void loop() {
+        if (opmodeTimer.getElapsedTimeSeconds() >= 60.0) {
+            requestOpModeStop();
+            return;
+        }
         follower.update();
 
         Pose current_robot_pos = follower.getPose();  //save to Pose
         Vector current_robot_vel = follower.getVelocity();
 
 
-        shooter.ShotResult result = shooter.calculateShot(current_robot_pos, RED_GOAL, SCORE_HEIGHT, current_robot_vel, SCORE_ANGLE);
+        shooter.ShotResult result = shooter.calculateShot(current_robot_pos, BLUE_GOAL, SCORE_HEIGHT, current_robot_vel, SCORE_ANGLE);
         if (result != null) {
 
-            double StaticTargetPosTicks = tracking.fix_to_goal_RED(current_robot_pos);
+            double StaticTargetPosTicks = tracking.fix_to_goal_BLUE(current_robot_pos);
 
             double offsetTicks = (result.turretOffset / (2 * Math.PI)) * SHOOTER_ANGLE_TPR * (105.0/25.0);
 
@@ -236,31 +240,31 @@ public class RED_FAR_15 extends OpMode {
 
     public void buildPaths() { //경로 만들기
 
-        eat1 = new Path(new BezierCurve(RED_FAR_15_START, RED_FAR_15_EAT1_CP, RED_FAR_15_EAT1));
-        eat1.setLinearHeadingInterpolation(RED_FAR_15_START.getHeading(), RED_FAR_15_EAT1.getHeading());
+        eat1 = new Path(new BezierCurve(BLUE_FAR_15_START, BLUE_FAR_15_EAT1_CP, BLUE_FAR_15_EAT1));
+        eat1.setLinearHeadingInterpolation(BLUE_FAR_15_START.getHeading(), BLUE_FAR_15_EAT1.getHeading());
 
-        shoot1 = new Path(new BezierLine(RED_FAR_15_EAT1, RED_FAR_15_SHOOT));
-        shoot1.setLinearHeadingInterpolation(RED_FAR_15_EAT1.getHeading(), RED_FAR_15_SHOOT.getHeading());
+        shoot1 = new Path(new BezierLine(BLUE_FAR_15_EAT1, BLUE_FAR_15_SHOOT));
+        shoot1.setLinearHeadingInterpolation(BLUE_FAR_15_EAT1.getHeading(), BLUE_FAR_15_SHOOT.getHeading());
 
-        eat2 = new Path(new BezierLine(RED_FAR_15_SHOOT, RED_FAR_15_EAT2));
-        eat2.setLinearHeadingInterpolation(RED_FAR_15_SHOOT.getHeading(), RED_FAR_15_EAT2.getHeading());
+        eat2 = new Path(new BezierLine(BLUE_FAR_15_SHOOT, BLUE_FAR_15_EAT2));
+        eat2.setLinearHeadingInterpolation(BLUE_FAR_15_SHOOT.getHeading(), BLUE_FAR_15_EAT2.getHeading());
 
-        eat2again = new Path(new BezierCurve(RED_FAR_15_EAT2, RED_FAR_15_EAT2_CP, RED_FAR_15_EAT2_Again));
-        eat2again.setLinearHeadingInterpolation(RED_FAR_15_EAT2.getHeading(), RED_FAR_15_EAT2_Again.getHeading());
+        eat2again = new Path(new BezierCurve(BLUE_FAR_15_EAT2, BLUE_FAR_15_EAT2_CP, BLUE_FAR_15_EAT2_Again));
+        eat2again.setLinearHeadingInterpolation(BLUE_FAR_15_EAT2.getHeading(), BLUE_FAR_15_EAT2_Again.getHeading());
 
-        shoot2 = new Path(new BezierLine(RED_FAR_15_EAT2_Again, RED_FAR_15_SHOOT));
-        shoot2.setLinearHeadingInterpolation(RED_FAR_15_EAT2_Again.getHeading(), RED_FAR_15_SHOOT.getHeading());
+        shoot2 = new Path(new BezierLine(BLUE_FAR_15_EAT2_Again, BLUE_FAR_15_SHOOT));
+        shoot2.setLinearHeadingInterpolation(BLUE_FAR_15_EAT2_Again.getHeading(), BLUE_FAR_15_SHOOT.getHeading());
 
-        eat3 = new Path(new BezierLine(RED_FAR_15_SHOOT, RED_FAR_15_EAT3));
-        eat3.setLinearHeadingInterpolation(RED_FAR_15_SHOOT.getHeading(), RED_FAR_15_EAT3.getHeading());
+        eat3 = new Path(new BezierLine(BLUE_FAR_15_SHOOT, BLUE_FAR_15_EAT3));
+        eat3.setLinearHeadingInterpolation(BLUE_FAR_15_SHOOT.getHeading(), BLUE_FAR_15_EAT3.getHeading());
 
-        eat3again = new Path(new BezierLine(RED_FAR_15_EAT3, RED_FAR_15_EAT3_Again));
-        eat3again.setLinearHeadingInterpolation(RED_FAR_15_EAT3.getHeading(), RED_FAR_15_EAT3_Again.getHeading());
+        eat3again = new Path(new BezierLine(BLUE_FAR_15_EAT3, BLUE_FAR_15_EAT3_Again));
+        eat3again.setLinearHeadingInterpolation(BLUE_FAR_15_EAT3.getHeading(), BLUE_FAR_15_EAT3_Again.getHeading());
 
-        shoot3 = new Path(new BezierLine(RED_FAR_15_EAT3_Again, RED_FAR_15_SHOOT));
-        shoot3.setLinearHeadingInterpolation(RED_FAR_15_EAT3_Again.getHeading(), RED_FAR_15_SHOOT.getHeading());
+        shoot3 = new Path(new BezierLine(BLUE_FAR_15_EAT3_Again, BLUE_FAR_15_SHOOT));
+        shoot3.setLinearHeadingInterpolation(BLUE_FAR_15_EAT3_Again.getHeading(), BLUE_FAR_15_SHOOT.getHeading());
 
-        to_end = new Path(new BezierLine(RED_FAR_15_SHOOT, RED_FAR_END));
+        to_end = new Path(new BezierLine(BLUE_FAR_15_SHOOT, BLUE_FAR_END));
         to_end.setConstantHeadingInterpolation(Math.toRadians(0));
     }
 
@@ -427,11 +431,10 @@ public class RED_FAR_15 extends OpMode {
             case 24: //슈팅
                 if(pathTimer.getElapsedTimeSeconds()>=1){
                     shoot_stop();
-                    stop_eatting();
-                    follower.followPath(to_end);
-                    setPathState(25);
+                    setPathState(17);
                 }
                 break;
+
         }
     }
 
@@ -480,7 +483,7 @@ public class RED_FAR_15 extends OpMode {
     private void eat_servo_down() {
         servo_eat.setPosition(servo_pos_const.servo_eat_down);
     }
-// 슈터 속도 준비 여부 함수====
+    // 슈터 속도 준비 여부 함수====
     private boolean isShooterReady() {
         double target = targetMotorVelocity * SHOOTER_POWER_RATIO;
         double current = SL.getVelocity();
@@ -489,4 +492,3 @@ public class RED_FAR_15 extends OpMode {
     }
     // ==============
 }
-

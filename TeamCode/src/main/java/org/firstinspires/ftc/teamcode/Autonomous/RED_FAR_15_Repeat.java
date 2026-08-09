@@ -56,8 +56,8 @@ import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.sub_const.pos_const;
 import org.firstinspires.ftc.teamcode.sub_const.servo_pos_const;
 
-@Autonomous(name = "AUTO_RED_FAR_15_30s", group = "2026 Priemiere", preselectTeleOp = "TELEOP_RED_Priemier")
-public class RED_FAR_15 extends OpMode {
+@Autonomous(name = "AUTO_RED_FAR_15_60s", group = "2026 Priemiere", preselectTeleOp = "TELEOP_RED_Priemier")
+public class RED_FAR_15_Repeat extends OpMode {
 
     private TelemetryManager panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
     private static final double SHOOTER_POWER_RATIO = 0.67; //속도 오프셋
@@ -174,6 +174,10 @@ public class RED_FAR_15 extends OpMode {
 
     @Override
     public void loop() {
+        if (opmodeTimer.getElapsedTimeSeconds() >= 60.0) {
+            requestOpModeStop();
+            return;
+        }
         follower.update();
 
         Pose current_robot_pos = follower.getPose();  //save to Pose
@@ -427,11 +431,10 @@ public class RED_FAR_15 extends OpMode {
             case 24: //슈팅
                 if(pathTimer.getElapsedTimeSeconds()>=1){
                     shoot_stop();
-                    stop_eatting();
-                    follower.followPath(to_end);
-                    setPathState(25);
+                    setPathState(17);
                 }
                 break;
+
         }
     }
 
@@ -480,7 +483,7 @@ public class RED_FAR_15 extends OpMode {
     private void eat_servo_down() {
         servo_eat.setPosition(servo_pos_const.servo_eat_down);
     }
-// 슈터 속도 준비 여부 함수====
+    // 슈터 속도 준비 여부 함수====
     private boolean isShooterReady() {
         double target = targetMotorVelocity * SHOOTER_POWER_RATIO;
         double current = SL.getVelocity();

@@ -56,7 +56,7 @@ public class BLUE_Priemier extends LinearOpMode {
 
     private TelemetryManager ptelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
 
-    public static double vel_off = 0.65;//기존 0.64
+    public static double vel_off = 0.66;//기존 0.64
     public static double turret_off = 0;
     public static double off_changed = 0;
 
@@ -314,11 +314,22 @@ public class BLUE_Priemier extends LinearOpMode {
                 ));
             }
 
+
+            if (gamepad1.right_bumper){
+                follower.setPose(new Pose(16,78.5,Math.toRadians(90)));
+            }
             /*if (gamepad2.aWasPressed()) {
                 SA.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                 SA.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             }*/
 
+            if (gamepad2.dpadUpWasPressed()){
+                vel_off = 0.67;
+            }
+
+            if (gamepad2.dpadDownWasPressed()){
+                vel_off = 0.65;
+            }
 
             shooter.ShotResult result = shooter.calculateShot(follower.getPose(), BLUE_GOAL, SCORE_HEIGHT, follower.getVelocity(), SCORE_ANGLE);
 
