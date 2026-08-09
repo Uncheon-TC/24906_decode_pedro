@@ -176,6 +176,9 @@ public class RED_Priemier extends LinearOpMode {
 
         while (opModeIsActive()) { //main loop
 
+
+            double distToGoal = Math.hypot(follower.getPose().getX() - RED_GOAL.getX(), follower.getPose().getY() - RED_GOAL.getY());
+
             //=라임라이트용
             if (gamepad1.options) {
                 LLResult result = limelight.getLatestResult();
@@ -237,7 +240,11 @@ public class RED_Priemier extends LinearOpMode {
 
 
 
-
+            if (distToGoal>130){
+                vel_off = 0.65;
+            } else{
+                vel_off = 0.67;
+            }
 
 
             if (gamepad1.left_bumper) {
@@ -398,6 +405,8 @@ public class RED_Priemier extends LinearOpMode {
             ptelemetry.addData("tarVelo*vel_off", targetMotorVelocity*vel_off);
             ptelemetry.addData("curVelo", SL.getVelocity());
             ptelemetry.addData("curVelo_nonoff", SL.getVelocity()/vel_off);
+
+            ptelemetry.addData("distToGoal", distToGoal);
 
             ptelemetry.addData("x", follower.getPose().getX());
             ptelemetry.addData("y", follower.getPose().getY());

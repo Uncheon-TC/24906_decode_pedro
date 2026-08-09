@@ -49,6 +49,7 @@ import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.sub_const.servo_pos_const;
 import org.firstinspires.ftc.teamcode.sub_const.shooter_const;
 
+
 @Configurable
 
 @TeleOp(name = "TELEOP_BLUE_Priemier", group = "2025-2026 Test OP")
@@ -59,12 +60,12 @@ public class BLUE_Priemier extends LinearOpMode {
     public static double vel_off = 0.66;//기존 0.64
     public static double turret_off = 0;
     public static double off_changed = 0;
-
     private DcMotor FrontLeftMotor, FrontRightMotor, BackLeftMotor, BackRightMotor; //메카넘
     private DcMotor eat, SA;
     private DcMotorEx SL, SR;
     private Servo servo_S, servo_hood, servo_leftlift , servo_rightlift ;
     private IMU imu;
+
     Turret_Tracking tracking = new Turret_Tracking();
     private Follower follower;
     private final Pose startPose = new Pose(72,72,Math.toRadians(90));
@@ -176,7 +177,10 @@ public class BLUE_Priemier extends LinearOpMode {
 
         waitForStart();
 
-        while (opModeIsActive()) { //main loop
+
+        while (opModeIsActive()) { //main
+
+            double distToGoal = Math.hypot(follower.getPose().getX() - BLUE_GOAL.getX(), follower.getPose().getY() - BLUE_GOAL.getY());
 
             //=라임라이트용
             if (gamepad1.options) {
@@ -241,7 +245,11 @@ public class BLUE_Priemier extends LinearOpMode {
 
 
 
-
+            if (distToGoal>130){
+                vel_off = 0.65;
+            } else{
+                vel_off = 0.67;
+            }
 
 
             if (gamepad1.left_bumper) {
@@ -265,7 +273,6 @@ public class BLUE_Priemier extends LinearOpMode {
                 servo_leftlift.setPosition(servo_pos_const.servo_leftlift_down);
                 servo_rightlift.setPosition(servo_pos_const.servo_rightlift_down);
             }
-
 
 
 
@@ -404,6 +411,8 @@ public class BLUE_Priemier extends LinearOpMode {
             ptelemetry.addData("tarVelo*vel_off", targetMotorVelocity*vel_off);
             ptelemetry.addData("curVelo", SL.getVelocity());
             ptelemetry.addData("curVelo_nonoff", SL.getVelocity()/vel_off);
+
+            ptelemetry.addData("distToGoal", distToGoal);
 
             ptelemetry.addData("x", follower.getPose().getX());
             ptelemetry.addData("y", follower.getPose().getY());

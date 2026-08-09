@@ -8,7 +8,8 @@ public class pos_const_pre {
     public static Pose blue_eat_first = new Pose(29, 83, Math.toRadians(180));
     public static Pose blue_eat_second = new Pose(29, 59, Math.toRadians(180));
     public static Pose blue_eat_second_CP = new Pose(45, 58);
-    public static Pose blue_open_eat_wait = new Pose(20,50,Math.toRadians(180));
+    public static Pose blue_open_eat_wait = new Pose(15,56,Math.toRadians(180));
+    public static Pose blue_open_eat_wait_CP = new Pose(67,53);
     public static Pose blue_open_eat = new Pose(13,59,Math.toRadians(139.5));
     public static Pose blue_out = new Pose(40,83,Math.toRadians(180));
 

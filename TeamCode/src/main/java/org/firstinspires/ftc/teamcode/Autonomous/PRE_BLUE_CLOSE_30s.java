@@ -8,6 +8,7 @@ import static org.firstinspires.ftc.teamcode.sub_const.pos_const_pre.blue_eat_se
 import static org.firstinspires.ftc.teamcode.sub_const.pos_const_pre.blue_eat_second_CP;
 import static org.firstinspires.ftc.teamcode.sub_const.pos_const_pre.blue_open_eat;
 import static org.firstinspires.ftc.teamcode.sub_const.pos_const_pre.blue_open_eat_wait;
+import static org.firstinspires.ftc.teamcode.sub_const.pos_const_pre.blue_open_eat_wait_CP;
 import static org.firstinspires.ftc.teamcode.sub_const.pos_const_pre.blue_out;
 import static org.firstinspires.ftc.teamcode.sub_const.shooter_const.FLYWHEEL_TPR;
 import static org.firstinspires.ftc.teamcode.sub_const.shooter_const.HOOD_MAX_ANGLE;
@@ -253,7 +254,7 @@ public class PRE_BLUE_CLOSE_30s extends OpMode {
                 .addPath(TS)
                 .build();
 
-        OPwait = new Path(new BezierLine(blue_close_shot,blue_open_eat_wait));
+        OPwait = new Path(new BezierCurve(blue_close_shot,blue_open_eat_wait_CP,blue_open_eat_wait));
         OPwait.setLinearHeadingInterpolation(blue_close_shot.getHeading(),blue_open_eat_wait.getHeading());
 
         OP = new Path(new BezierLine(blue_open_eat_wait,blue_open_eat));
