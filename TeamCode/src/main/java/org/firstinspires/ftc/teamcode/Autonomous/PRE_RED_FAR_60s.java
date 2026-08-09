@@ -57,7 +57,7 @@ import org.firstinspires.ftc.teamcode.sub_const.pos_const;
 import org.firstinspires.ftc.teamcode.sub_const.servo_pos_const;
 
 @Autonomous(name = "AUTO_RED_FAR_15_60s", group = "2026 Priemiere", preselectTeleOp = "TELEOP_RED_Priemier")
-public class RED_FAR_15_Repeat extends OpMode {
+public class PRE_RED_FAR_60s extends OpMode {
 
     private TelemetryManager panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
     private static final double SHOOTER_POWER_RATIO = 0.67; //속도 오프셋

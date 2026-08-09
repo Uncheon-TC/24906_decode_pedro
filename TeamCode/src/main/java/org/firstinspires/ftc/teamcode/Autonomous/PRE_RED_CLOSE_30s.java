@@ -1,16 +1,14 @@
 package org.firstinspires.ftc.teamcode.Autonomous;
 
-import static org.firstinspires.ftc.teamcode.sub_const.pos_const.RED_FAR_15_EAT1;
-import static org.firstinspires.ftc.teamcode.sub_const.pos_const.RED_FAR_15_EAT1_CP;
-import static org.firstinspires.ftc.teamcode.sub_const.pos_const.RED_FAR_15_EAT2;
-import static org.firstinspires.ftc.teamcode.sub_const.pos_const.RED_FAR_15_EAT2_Again;
-import static org.firstinspires.ftc.teamcode.sub_const.pos_const.RED_FAR_15_EAT2_CP;
-import static org.firstinspires.ftc.teamcode.sub_const.pos_const.RED_FAR_15_EAT3;
-import static org.firstinspires.ftc.teamcode.sub_const.pos_const.RED_FAR_15_EAT3_Again;
-import static org.firstinspires.ftc.teamcode.sub_const.pos_const.RED_FAR_15_SHOOT;
-import static org.firstinspires.ftc.teamcode.sub_const.pos_const.RED_FAR_15_START;
-import static org.firstinspires.ftc.teamcode.sub_const.pos_const.RED_FAR_END;
-import static org.firstinspires.ftc.teamcode.sub_const.pos_const_original.RED_GOAL;
+import static org.firstinspires.ftc.teamcode.sub_const.pos_const.RED_GOAL;
+import static org.firstinspires.ftc.teamcode.sub_const.pos_const_pre.red_close_shot;
+import static org.firstinspires.ftc.teamcode.sub_const.pos_const_pre.red_close_start;
+import static org.firstinspires.ftc.teamcode.sub_const.pos_const_pre.red_eat_first;
+import static org.firstinspires.ftc.teamcode.sub_const.pos_const_pre.red_eat_second;
+import static org.firstinspires.ftc.teamcode.sub_const.pos_const_pre.red_eat_second_CP;
+import static org.firstinspires.ftc.teamcode.sub_const.pos_const_pre.red_open_eat;
+import static org.firstinspires.ftc.teamcode.sub_const.pos_const_pre.red_open_eat_wait;
+import static org.firstinspires.ftc.teamcode.sub_const.pos_const_pre.red_out;
 import static org.firstinspires.ftc.teamcode.sub_const.shooter_const.FLYWHEEL_TPR;
 import static org.firstinspires.ftc.teamcode.sub_const.shooter_const.HOOD_MAX_ANGLE;
 import static org.firstinspires.ftc.teamcode.sub_const.shooter_const.HOOD_MIN_ANGLE;
@@ -56,11 +54,11 @@ import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.sub_const.pos_const;
 import org.firstinspires.ftc.teamcode.sub_const.servo_pos_const;
 
-@Autonomous(name = "AUTO_RED_FAR_15_30s", group = "2026 Priemiere", preselectTeleOp = "TELEOP_RED_Priemier")
-public class RED_FAR_15 extends OpMode {
+@Autonomous(name = "Red_Auto_30s_Close_Duo", group = "2026 Premiere", preselectTeleOp = "TELEOP_RED_Priemier")
+public class PRE_RED_CLOSE_30s extends OpMode {
 
     private TelemetryManager panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
-    private static final double SHOOTER_POWER_RATIO = 0.67; //속도 오프셋
+
     private Follower follower;
     private Timer pathTimer, actionTimer, opmodeTimer, segmentTime;
     private int pathState;
@@ -79,20 +77,11 @@ public class RED_FAR_15 extends OpMode {
 
     private double shooter_power = 0;
 
-    private Path first_shoot;
-    private Path eat1;
-    private Path eat2;
-    private Path eat3;
-    private Path eat4;
-    private Path shoot1;
-    private Path shoot2;
-    private Path shoot3;
-    private Path shoot4;
-    private Path to_end;
-    private Path eat2again;
-    private Path eat3again;
 
-    private PathChain eat_shoot1, eat_shoot2, eat_shoot3, eat_shoot4, gate_again;
+
+    private Path FS,E1,SS,E2,TS,OPwait,OP,OUT,RS;
+    private PathChain First_Shoot,Second_Shoot;
+
 
 
     @Override
@@ -104,7 +93,7 @@ public class RED_FAR_15 extends OpMode {
 
         follower = Constants.createFollower(hardwareMap);
         buildPaths();
-        follower.setStartingPose(RED_FAR_15_START);
+        follower.setStartingPose(red_close_start);
 
         //////////////////////////////////////////
 
@@ -174,10 +163,15 @@ public class RED_FAR_15 extends OpMode {
 
     @Override
     public void loop() {
+        if (opmodeTimer.getElapsedTimeSeconds() >= 60.0) {
+            requestOpModeStop();
+            return;
+        }
         follower.update();
-
         Pose current_robot_pos = follower.getPose();  //save to Pose
         Vector current_robot_vel = follower.getVelocity();
+
+        autonomousPathUpdate();
 
 
         shooter.ShotResult result = shooter.calculateShot(current_robot_pos, RED_GOAL, SCORE_HEIGHT, current_robot_vel, SCORE_ANGLE);
@@ -187,7 +181,7 @@ public class RED_FAR_15 extends OpMode {
 
             double offsetTicks = (result.turretOffset / (2 * Math.PI)) * SHOOTER_ANGLE_TPR * (105.0/25.0);
 
-            finalTurretAngle = (int) round(StaticTargetPosTicks - offsetTicks);
+            finalTurretAngle = (int) round(StaticTargetPosTicks/* + offsetTicks*/);
 
             double clampedAngle = Range.clip(result.hoodAngle, HOOD_MIN_ANGLE, HOOD_MAX_ANGLE);
             double hood_servo_pos = mapAngleToServo(clampedAngle);
@@ -203,14 +197,13 @@ public class RED_FAR_15 extends OpMode {
             motor_power = controller.run();
             SA.setPower(motor_power);
 
-            targetMotorVelocity = velocityToTicks(result.launchSpeed);
+            double targetMotorVelocity = velocityToTicks(result.launchSpeed);
 
-            SL.setVelocity(targetMotorVelocity*SHOOTER_POWER_RATIO);
+            SL.setVelocity(targetMotorVelocity*0.64);
             shooter_power = SL.getPower();
             SR.setPower(shooter_power);
         }
 
-        autonomousPathUpdate();
 
         pos_const.savedAutoPose = follower.getPose();
 
@@ -235,208 +228,177 @@ public class RED_FAR_15 extends OpMode {
 
 
     public void buildPaths() { //경로 만들기
+        FS = new Path(new BezierLine(red_close_start,red_close_shot));
+        FS.setLinearHeadingInterpolation(red_close_start.getHeading(),red_close_shot.getHeading());
 
-        eat1 = new Path(new BezierCurve(RED_FAR_15_START, RED_FAR_15_EAT1_CP, RED_FAR_15_EAT1));
-        eat1.setLinearHeadingInterpolation(RED_FAR_15_START.getHeading(), RED_FAR_15_EAT1.getHeading());
+        E1 = new Path(new BezierLine(red_close_shot,red_eat_first));
+        E1.setLinearHeadingInterpolation(red_close_shot.getHeading(),red_eat_first.getHeading());
 
-        shoot1 = new Path(new BezierLine(RED_FAR_15_EAT1, RED_FAR_15_SHOOT));
-        shoot1.setLinearHeadingInterpolation(RED_FAR_15_EAT1.getHeading(), RED_FAR_15_SHOOT.getHeading());
+        SS = new Path(new BezierLine(red_eat_first,red_close_shot));
+        SS.setLinearHeadingInterpolation(red_eat_first.getHeading(),red_close_shot.getHeading());
 
-        eat2 = new Path(new BezierLine(RED_FAR_15_SHOOT, RED_FAR_15_EAT2));
-        eat2.setLinearHeadingInterpolation(RED_FAR_15_SHOOT.getHeading(), RED_FAR_15_EAT2.getHeading());
+        First_Shoot = follower.pathBuilder()
+                .addPath(E1)
+                .addPath(SS)
+                .build();
 
-        eat2again = new Path(new BezierCurve(RED_FAR_15_EAT2, RED_FAR_15_EAT2_CP, RED_FAR_15_EAT2_Again));
-        eat2again.setLinearHeadingInterpolation(RED_FAR_15_EAT2.getHeading(), RED_FAR_15_EAT2_Again.getHeading());
+        E2 = new Path(new BezierCurve(red_close_shot,red_eat_second_CP,red_eat_second));
+        E2.setLinearHeadingInterpolation(red_close_shot.getHeading(),red_eat_second.getHeading());
 
-        shoot2 = new Path(new BezierLine(RED_FAR_15_EAT2_Again, RED_FAR_15_SHOOT));
-        shoot2.setLinearHeadingInterpolation(RED_FAR_15_EAT2_Again.getHeading(), RED_FAR_15_SHOOT.getHeading());
+        TS = new Path(new BezierLine(red_eat_second,red_close_shot));
+        TS.setLinearHeadingInterpolation(red_eat_second.getHeading(),red_close_shot.getHeading());
 
-        eat3 = new Path(new BezierLine(RED_FAR_15_SHOOT, RED_FAR_15_EAT3));
-        eat3.setLinearHeadingInterpolation(RED_FAR_15_SHOOT.getHeading(), RED_FAR_15_EAT3.getHeading());
+        Second_Shoot = follower.pathBuilder()
+                .addPath(E2)
+                .addPath(TS)
+                .build();
 
-        eat3again = new Path(new BezierLine(RED_FAR_15_EAT3, RED_FAR_15_EAT3_Again));
-        eat3again.setLinearHeadingInterpolation(RED_FAR_15_EAT3.getHeading(), RED_FAR_15_EAT3_Again.getHeading());
+        OPwait = new Path(new BezierLine(red_close_shot,red_open_eat_wait));
+        OPwait.setLinearHeadingInterpolation(red_close_shot.getHeading(),red_open_eat_wait.getHeading());
 
-        shoot3 = new Path(new BezierLine(RED_FAR_15_EAT3_Again, RED_FAR_15_SHOOT));
-        shoot3.setLinearHeadingInterpolation(RED_FAR_15_EAT3_Again.getHeading(), RED_FAR_15_SHOOT.getHeading());
+        OP = new Path(new BezierLine(red_open_eat_wait,red_open_eat));
+        OP.setLinearHeadingInterpolation(red_open_eat_wait.getHeading(),red_open_eat.getHeading());
 
-        to_end = new Path(new BezierLine(RED_FAR_15_SHOOT, RED_FAR_END));
-        to_end.setConstantHeadingInterpolation(Math.toRadians(0));
+        RS = new Path(new BezierLine(red_open_eat,red_close_shot));
+        RS.setLinearHeadingInterpolation(red_open_eat.getHeading(),red_close_shot.getHeading());
+
+        OUT = new Path(new BezierLine(red_close_shot,red_out));
+        OUT.setLinearHeadingInterpolation(red_close_shot.getHeading(),red_out.getHeading());
     }
 
-    public void autonomousPathUpdate(){
-        switch(pathState){
-            case 0: // 속도 도달 대기
-                if (isShooterReady()) {
-                    setPathState(1);
-                }
+    public void autonomousPathUpdate() {  //경로 상태 관리하기
+        switch (pathState) {
+            case 0:
+                follower.followPath(FS);
+                setPathState(1);
                 break;
-            case 1: // preload 발사
-                shoot();
-                if (pathTimer.getElapsedTimeSeconds() >= 1) {
-                    shoot_stop();
-                    follower.followPath(eat1);
+
+            case 1:
+                eatting();
+                if (!follower.isBusy()){
+                    shoot();
                     setPathState(2);
                 }
                 break;
-            case 2: // 3번째 줄 먹으러가기
-                eatting();
-                if(!follower.isBusy()){
-                    follower.followPath(shoot1);
+
+            case 2:
+                if (pathTimer.getElapsedTimeSeconds()>=1){
+                    shoot_stop();
                     setPathState(3);
                 }
                 break;
-            case 3: // 슈팅포인트로 이동
-                if(!follower.isBusy()){
-                    shoot();
-                    setPathState(4);
-                }
+
+            case 3:
+                follower.followPath(First_Shoot);
+                setPathState(4);
                 break;
-            case 4: // 슈팅
-                if(pathTimer.getElapsedTimeSeconds()>=1){
-                    shoot_stop();
-                    follower.followPath(eat2);
+
+            case 4:
+                if (!follower.isBusy()){
+                    shoot();
                     setPathState(5);
                 }
                 break;
-            case 5: // 구석 먹으러가기
-                eatting();
-                if(!follower.isBusy()){
-                    follower.followPath(eat2again);
+
+            case 5:
+                if (pathTimer.getElapsedTimeSeconds()>=1){
+                    shoot_stop();
                     setPathState(6);
                 }
                 break;
-            case 6: // 구석 다시 한번
-                if(!follower.isBusy()){
-                    follower.followPath(shoot2);
-                    setPathState(7);
-                }
+
+            case 6:
+                follower.followPath(Second_Shoot);
+                setPathState(7);
                 break;
-            case 7: // 슈팅포지션으로
-                if(!follower.isBusy()){
+
+            case 7:
+                if (!follower.isBusy()){
                     shoot();
                     setPathState(8);
                 }
                 break;
-            case 8: //슈팅
-                if(pathTimer.getElapsedTimeSeconds()>=1){
+
+            case 8:
+                if (pathTimer.getElapsedTimeSeconds()>=1){
                     shoot_stop();
-                    follower.followPath(eat3);
                     setPathState(9);
                 }
                 break;
-            case 9: // 쓸어담기
-                eatting();
-                if(!follower.isBusy()){
-                    follower.followPath(eat3again);
-                    setPathState(10);
-                }
+
+            case 9:
+                follower.followPath(OPwait);
+                setPathState(10);
                 break;
-            case 10: // 쓸어담기
-                if(!follower.isBusy()){
-                    follower.followPath(shoot3);
+
+            case 10:
+                if (!follower.isBusy()){
+                    follower.followPath(OP);
                     setPathState(11);
                 }
                 break;
-            case 11: // 슈팅포지션으로
-                if(!follower.isBusy()){
-                    shoot();
+
+            case 11:
+                if(pathTimer.getElapsedTimeSeconds()>=2){
+                    follower.followPath(RS);
                     setPathState(12);
                 }
                 break;
-            case 12: //슈팅
-                if(pathTimer.getElapsedTimeSeconds()>=1){
-                    shoot_stop();
-                    follower.followPath(eat3);
+
+            case 12:
+                if (!follower.isBusy()){
+                    shoot();
                     setPathState(13);
                 }
                 break;
-            case 13: // 쓸어담기
-                eatting();
-                if(!follower.isBusy()){
-                    follower.followPath(eat3again);
+
+            case 13:
+                if (pathTimer.getElapsedTimeSeconds()>=1){
+                    shoot_stop();
                     setPathState(14);
                 }
+
+            case 14:
+                follower.followPath(OPwait);
+                setPathState(15);
                 break;
-            case 14: // 쓸어담기
-                if(!follower.isBusy()){
-                    follower.followPath(shoot3);
-                    setPathState(15);
-                }
-                break;
-            case 15: // 슈팅포지션으로
-                if(!follower.isBusy()){
-                    shoot();
+
+            case 15:
+                if (!follower.isBusy()){
+                    follower.followPath(OP);
                     setPathState(16);
                 }
                 break;
-            case 16: //슈팅
-                if(pathTimer.getElapsedTimeSeconds()>=1){
-                    shoot_stop();
-                    stop_eatting();
-                    follower.followPath(eat3);
+
+            case 16:
+                if(pathTimer.getElapsedTimeSeconds()>=2){
+                    follower.followPath(RS);
                     setPathState(17);
                 }
                 break;
-            case 17: // 쓸어담기
-                eatting();
-                if(!follower.isBusy()){
-                    follower.followPath(eat3again);
+
+            case 17:
+                if (!follower.isBusy()){
+                    shoot();
                     setPathState(18);
                 }
                 break;
-            case 18: // 쓸어담기
-                if(!follower.isBusy()){
-                    follower.followPath(shoot3);
+
+            case 18:
+                if (pathTimer.getElapsedTimeSeconds()>=1){
+                    shoot_stop();
                     setPathState(19);
                 }
                 break;
-            case 19: // 슈팅포지션으로
-                if(!follower.isBusy()){
-                    shoot();
-                    setPathState(20);
-                }
+
+            case 19:
+                follower.followPath(OUT);
+                setPathState(20);
                 break;
-            case 20: //슈팅
-                if(pathTimer.getElapsedTimeSeconds()>=1){
-                    shoot_stop();
-                    stop_eatting();
-                    follower.followPath(eat3);
-                    setPathState(21);
-                }
-                break;
-            case 21: // 쓸어담기
-                eatting();
-                if(!follower.isBusy()){
-                    follower.followPath(eat3again);
-                    setPathState(22);
-                }
-                break;
-            case 22: // 쓸어담기
-                if(!follower.isBusy()){
-                    follower.followPath(shoot3);
-                    setPathState(23);
-                }
-                break;
-            case 23: // 슈팅포지션으로
-                if(!follower.isBusy()){
-                    shoot();
-                    setPathState(24);
-                }
-                break;
-            case 24: //슈팅
-                if(pathTimer.getElapsedTimeSeconds()>=1){
-                    shoot_stop();
-                    stop_eatting();
-                    follower.followPath(to_end);
-                    setPathState(25);
-                }
-                break;
+
         }
     }
 
-    //================== 추가 함수들 ============================================
-    //=========================================================================
     public void setPathState(int pState) {  //경로상태 업데이트
         pathState = pState;
         pathTimer.resetTimer();
@@ -480,13 +442,6 @@ public class RED_FAR_15 extends OpMode {
     private void eat_servo_down() {
         servo_eat.setPosition(servo_pos_const.servo_eat_down);
     }
-// 슈터 속도 준비 여부 함수====
-    private boolean isShooterReady() {
-        double target = targetMotorVelocity * SHOOTER_POWER_RATIO;
-        double current = SL.getVelocity();
 
-        return Math.abs(target - current) <= 50;
-    }
-    // ==============
+
 }
-

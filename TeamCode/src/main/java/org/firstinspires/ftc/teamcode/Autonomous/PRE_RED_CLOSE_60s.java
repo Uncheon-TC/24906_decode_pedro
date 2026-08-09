@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.Autonomous;
 
-import static org.firstinspires.ftc.teamcode.sub_const.pos_const.BLUE_GOAL;
-import static org.firstinspires.ftc.teamcode.sub_const.pos_const_pre.blue_close_start;
+import static org.firstinspires.ftc.teamcode.sub_const.pos_const.RED_GOAL;
+import static org.firstinspires.ftc.teamcode.sub_const.pos_const_pre.red_close_start;
 import static org.firstinspires.ftc.teamcode.sub_const.shooter_const.FLYWHEEL_TPR;
 import static org.firstinspires.ftc.teamcode.sub_const.shooter_const.HOOD_MAX_ANGLE;
 import static org.firstinspires.ftc.teamcode.sub_const.shooter_const.HOOD_MIN_ANGLE;
@@ -9,7 +9,6 @@ import static org.firstinspires.ftc.teamcode.sub_const.shooter_const.HOOD_SERVO_
 import static org.firstinspires.ftc.teamcode.sub_const.shooter_const.HOOD_SERVO_MIN;
 import static org.firstinspires.ftc.teamcode.sub_const.shooter_const.SCORE_ANGLE;
 import static org.firstinspires.ftc.teamcode.sub_const.shooter_const.SCORE_HEIGHT;
-import static org.firstinspires.ftc.teamcode.sub_const.shooter_const.SHOOTER_ANGLE_TPR;
 import static org.firstinspires.ftc.teamcode.sub_const.shooter_const.WHEEL_RADIUS;
 import static org.firstinspires.ftc.teamcode.sub_const.shooter_const.flywheel_d;
 import static org.firstinspires.ftc.teamcode.sub_const.shooter_const.flywheel_f;
@@ -43,8 +42,8 @@ import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.sub_const.pos_const;
 import org.firstinspires.ftc.teamcode.sub_const.servo_pos_const;
 
-@Autonomous(name = "Blue_Auto_60s", group = "2026 Premiere", preselectTeleOp = "TELEOP_BLUE_Priemier")
-public class Blue_Auto_P_60 extends OpMode {
+@Autonomous(name = "Red_Auto_60s", group = "2026 Premiere", preselectTeleOp = "TELEOP_RED_Priemier")
+public class PRE_RED_CLOSE_60s extends OpMode {
 
     private TelemetryManager panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
     private Follower follower;
@@ -64,7 +63,7 @@ public class Blue_Auto_P_60 extends OpMode {
         opmodeTimer = new Timer();
 
         follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(blue_close_start);
+        follower.setStartingPose(red_close_start);
 
         controller = new PIDFController(new PIDFCoefficients(shooter_p, shooter_i, shooter_d, shooter_f));
 
@@ -124,9 +123,9 @@ public class Blue_Auto_P_60 extends OpMode {
         autonomousPathUpdate();
 
         // Shooter Logic
-        shooter.ShotResult result = shooter.calculateShot(current_robot_pos, BLUE_GOAL, SCORE_HEIGHT, current_robot_vel, SCORE_ANGLE);
+        shooter.ShotResult result = shooter.calculateShot(current_robot_pos, RED_GOAL, SCORE_HEIGHT, current_robot_vel, SCORE_ANGLE);
         if (result != null) {
-            finalTurretAngle = tracking.fix_to_goal_BLUE(current_robot_pos);
+            finalTurretAngle = tracking.fix_to_goal_RED(current_robot_pos);
             servo_hood.setPosition(mapAngleToServo(Range.clip(result.hoodAngle, HOOD_MIN_ANGLE, HOOD_MAX_ANGLE)));
 
             controller.setTargetPosition(finalTurretAngle);
