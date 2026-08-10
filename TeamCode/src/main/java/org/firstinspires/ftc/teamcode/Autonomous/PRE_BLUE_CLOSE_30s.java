@@ -4,9 +4,11 @@ import static org.firstinspires.ftc.teamcode.sub_const.pos_const.BLUE_GOAL;
 import static org.firstinspires.ftc.teamcode.sub_const.pos_const_pre.blue_close_shot;
 import static org.firstinspires.ftc.teamcode.sub_const.pos_const_pre.blue_close_start;
 import static org.firstinspires.ftc.teamcode.sub_const.pos_const_pre.blue_eat_first;
+import static org.firstinspires.ftc.teamcode.sub_const.pos_const_pre.blue_eat_first_CP;
 import static org.firstinspires.ftc.teamcode.sub_const.pos_const_pre.blue_eat_second;
 import static org.firstinspires.ftc.teamcode.sub_const.pos_const_pre.blue_eat_second_CP;
 import static org.firstinspires.ftc.teamcode.sub_const.pos_const_pre.blue_open_eat;
+import static org.firstinspires.ftc.teamcode.sub_const.pos_const_pre.blue_open_eat_CP;
 import static org.firstinspires.ftc.teamcode.sub_const.pos_const_pre.blue_open_eat_wait;
 import static org.firstinspires.ftc.teamcode.sub_const.pos_const_pre.blue_open_eat_wait_CP;
 import static org.firstinspires.ftc.teamcode.sub_const.pos_const_pre.blue_out;
@@ -55,7 +57,7 @@ import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.sub_const.pos_const;
 import org.firstinspires.ftc.teamcode.sub_const.servo_pos_const;
 
-@Autonomous(name = "Blue_Auto_30s_Close_Duo", group = "2026 Premiere", preselectTeleOp = "TELEOP_BLUE_Priemier")
+@Autonomous(name = "AUTO_PRE_BLUE_CLOSE_30s", group = "2026Premiere", preselectTeleOp = "TELEOP_BLUE_Priemier")
 public class PRE_BLUE_CLOSE_30s extends OpMode {
 
     private TelemetryManager panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
@@ -232,7 +234,7 @@ public class PRE_BLUE_CLOSE_30s extends OpMode {
         FS = new Path(new BezierLine(blue_close_start,blue_close_shot));
         FS.setLinearHeadingInterpolation(blue_close_start.getHeading(),blue_close_shot.getHeading());
 
-        E1 = new Path(new BezierLine(blue_close_shot,blue_eat_first));
+        E1 = new Path(new BezierCurve(blue_close_shot,blue_eat_first_CP,blue_eat_first));
         E1.setLinearHeadingInterpolation(blue_close_shot.getHeading(),blue_eat_first.getHeading());
 
         SS = new Path(new BezierLine(blue_eat_first,blue_close_shot));
@@ -257,7 +259,7 @@ public class PRE_BLUE_CLOSE_30s extends OpMode {
         OPwait = new Path(new BezierCurve(blue_close_shot,blue_open_eat_wait_CP,blue_open_eat_wait));
         OPwait.setLinearHeadingInterpolation(blue_close_shot.getHeading(),blue_open_eat_wait.getHeading());
 
-        OP = new Path(new BezierLine(blue_open_eat_wait,blue_open_eat));
+        OP = new Path(new BezierCurve(blue_open_eat_wait,blue_open_eat_CP,blue_open_eat));
         OP.setLinearHeadingInterpolation(blue_open_eat_wait.getHeading(),blue_open_eat.getHeading());
 
         RS = new Path(new BezierLine(blue_open_eat,blue_close_shot));
@@ -340,7 +342,7 @@ public class PRE_BLUE_CLOSE_30s extends OpMode {
                 break;
 
             case 11:
-                if(pathTimer.getElapsedTimeSeconds()>=2){
+                if(pathTimer.getElapsedTimeSeconds()>=2.5){
                     follower.followPath(RS);
                     setPathState(12);
                 }
@@ -358,6 +360,8 @@ public class PRE_BLUE_CLOSE_30s extends OpMode {
                     shoot_stop();
                     setPathState(14);
                 }
+                break;
+
 
             case 14:
                 follower.followPath(OPwait);
@@ -372,7 +376,7 @@ public class PRE_BLUE_CLOSE_30s extends OpMode {
                 break;
 
             case 16:
-                if(pathTimer.getElapsedTimeSeconds()>=2){
+                if(pathTimer.getElapsedTimeSeconds()>=2.5){
                     follower.followPath(RS);
                     setPathState(17);
                 }

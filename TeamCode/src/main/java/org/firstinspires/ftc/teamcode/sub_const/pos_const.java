@@ -67,7 +67,7 @@ public class pos_const {
 
 
     // RED_FAR
-    public static Pose RED_FAR_15_START = new Pose(95, 8, Math.toRadians(0));
+    public static Pose RED_FAR_15_START = new Pose(92, 8, Math.toRadians(0));
     public static Pose RED_FAR_15_EAT1 = new Pose(128,35, Math.toRadians(0));
     public static Pose RED_FAR_15_EAT1_CP = new Pose(93,39, Math.toRadians(0));
     public static Pose RED_FAR_15_SHOOT = new Pose(94, 12, Math.toRadians(0));
