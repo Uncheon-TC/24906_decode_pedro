@@ -240,7 +240,7 @@ public class RED_Priemier extends LinearOpMode {
 
 
 
-            if (distToGoal>130){
+            if (distToGoal<130){
                 vel_off = 0.65;
             } else{
                 vel_off = 0.67;
