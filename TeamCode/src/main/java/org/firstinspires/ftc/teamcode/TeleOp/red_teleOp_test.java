@@ -31,7 +31,7 @@ import org.firstinspires.ftc.teamcode.sub_const.shooter_const;
 
 @Configurable
 
-@TeleOp(name = "RED TeleOp", group = "2025-2026 Test OP")
+@TeleOp(name = "RED TeleOp")
 public class red_teleOp_test extends LinearOpMode {
 
     private TelemetryManager ptelemetry = PanelsTelemetry.INSTANCE.getTelemetry();

@@ -79,21 +79,7 @@ public class PRE_RED_FAR_60s extends OpMode {
 
     private double shooter_power = 0;
 
-    private Path first_shoot;
-    private Path eat1;
-    private Path eat2;
-    private Path eat3;
-    private Path eat4;
-    private Path shoot1;
-    private Path shoot2;
-    private Path shoot3;
-    private Path shoot4;
-    private Path to_end;
-    private Path eat2again;
-    private Path eat3again;
-
-    private PathChain eat_shoot1, eat_shoot2, eat_shoot3, eat_shoot4, gate_again;
-
+    private Path FE, RSF, SE, RSS;
 
     @Override
     public void init() {
@@ -126,23 +112,16 @@ public class PRE_RED_FAR_60s extends OpMode {
 
         SA.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        //SL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        //SR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
         SL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         SR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         SL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
         SR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        //SR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         SL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         SR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 
-
         eat.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
         eat.setPower(0);
 
         servo_S = hardwareMap.servo.get("servo_S");
@@ -160,7 +139,6 @@ public class PRE_RED_FAR_60s extends OpMode {
                 .PIDFCoefficients(flywheel_p, flywheel_i, flywheel_d, flywheel_f);
 
         SL.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, flywheel_pidfCoeffiients);
-        //SR.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, flywheel_pidfCoeffiients);
 
     }
 
@@ -185,7 +163,7 @@ public class PRE_RED_FAR_60s extends OpMode {
 
 
         shooter.ShotResult result = shooter.calculateShot(current_robot_pos, RED_GOAL, SCORE_HEIGHT, current_robot_vel, SCORE_ANGLE);
-        if (result != null) {
+        if (result != null && pathState < 100) {
 
             double StaticTargetPosTicks = tracking.fix_to_goal_RED(current_robot_pos);
 
@@ -231,8 +209,6 @@ public class PRE_RED_FAR_60s extends OpMode {
         panelsTelemetry.addData("current_velo", SL.getVelocity());
         panelsTelemetry.addData("cueent_vele_nonoff", SL.getVelocity()/0.64);
 
-        //panelsTelemetry.addData("velo")
-
         panelsTelemetry.update(telemetry);
 
     }
@@ -240,13 +216,99 @@ public class PRE_RED_FAR_60s extends OpMode {
 
     public void buildPaths() { //경로 만들기
 
+        FE = new Path(new BezierCurve(RED_FAR_15_START, RED_FAR_15_EAT1_CP, RED_FAR_15_EAT1));
+        FE.setLinearHeadingInterpolation(RED_FAR_15_START.getHeading(), RED_FAR_15_EAT1.getHeading());
 
+        RSF = new Path(new BezierLine(RED_FAR_15_EAT1, RED_FAR_15_SHOOT));
+        RSF.setLinearHeadingInterpolation(RED_FAR_15_EAT1.getHeading(), RED_FAR_15_SHOOT.getHeading());
+
+        SE = new Path(new BezierCurve(RED_FAR_15_SHOOT, RED_FAR_15_EAT2_CP, RED_FAR_15_EAT2));
+        SE.setLinearHeadingInterpolation(RED_FAR_15_SHOOT.getHeading(), RED_FAR_15_EAT2.getHeading());
+
+        RSS = new Path(new BezierCurve(RED_FAR_15_EAT2, RED_FAR_15_EAT2_CP, RED_FAR_15_SHOOT));
+        RSS.setLinearHeadingInterpolation(RED_FAR_15_EAT2.getHeading(), RED_FAR_15_SHOOT.getHeading());
     }
 
-    public void autonomousPathUpdate(){
-        switch(pathState){
+    public void autonomousPathUpdate() {
+        if (opmodeTimer.getElapsedTimeSeconds() >= 55.0 && pathState < 100) {
+            setPathState(100);
+            stop_eatting();
+            shoot_stop();
+            SL.setPower(0);
+            SR.setPower(0);
+            SA.setPower(0);
+            Path parkPath = new Path(new BezierLine(follower.getPose(), pos_const.RED_PARKING));
+            parkPath.setLinearHeadingInterpolation(follower.getPose().getHeading(), pos_const.RED_PARKING.getHeading());
+            follower.followPath(parkPath, true);
+        }
 
+        switch (pathState) {
+            case 0: // 슈터 대기
+                if (isShooterReady()) {
+                    setPathState(1);
+                }
+                break;
 
+            case 1: // 프리로드 샷
+                shoot();
+                if (pathTimer.getElapsedTimeSeconds() >= 1.0) {
+                    shoot_stop();
+                    follower.followPath(FE);
+                    setPathState(2);
+                }
+                break;
+
+            case 2: // 첫 번째 기물 수집 이동 중
+                eatting();
+                if (!follower.isBusy()) {
+                    follower.followPath(RSF);
+                    setPathState(3);
+                }
+                break;
+
+            case 3: // 슈팅 위치 이동 중
+                if (!follower.isBusy()) {
+                    setPathState(4);
+                }
+                break;
+
+            case 4: // 첫 번째 기물 슈팅
+                shoot();
+                if (pathTimer.getElapsedTimeSeconds() >= 1.0) {
+                    shoot_stop();
+                    follower.followPath(SE);
+                    setPathState(5);
+                }
+                break;
+
+            case 5: // 두 번째 기물 수집 이동 중
+                eatting();
+                if (!follower.isBusy()) {
+                    follower.followPath(RSS);
+                    setPathState(6);
+                }
+                break;
+
+            case 6: // 슈팅 위치 이동 중 (두 번째)
+                if (!follower.isBusy()) {
+                    setPathState(7);
+                }
+                break;
+
+            case 7: // 두 번째 기물 슈팅 후 반복
+                shoot();
+                if (pathTimer.getElapsedTimeSeconds() >= 1.0) {
+                    shoot_stop();
+                    follower.followPath(FE);
+                    setPathState(2);
+                }
+                break;
+
+            case 100:
+                if (!follower.isBusy()) {
+                    setPathState(101);
+                }
+                break;
         }
     }
 
@@ -284,7 +346,6 @@ public class PRE_RED_FAR_60s extends OpMode {
     }
 
     private void shoot_stop() {
-        //eat.setPower(0);
         servo_S.setPosition(servo_pos_const.servo_shoot_block);
     }
 
@@ -295,13 +356,11 @@ public class PRE_RED_FAR_60s extends OpMode {
     private void eat_servo_down() {
         servo_eat.setPosition(servo_pos_const.servo_eat_down);
     }
-    // 슈터 속도 준비 여부 함수====
+
     private boolean isShooterReady() {
         double target = targetMotorVelocity * SHOOTER_POWER_RATIO;
         double current = SL.getVelocity();
 
         return Math.abs(target - current) <= 50;
     }
-    // ==============
 }
-

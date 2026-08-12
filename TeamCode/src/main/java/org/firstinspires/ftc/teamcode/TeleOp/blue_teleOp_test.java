@@ -30,7 +30,7 @@ import org.firstinspires.ftc.teamcode.sub_const.servo_pos_const;
 
 @Configurable
 
-@TeleOp(name = "BLUE TeleOp", group = "2025-2026 Test OP")
+@TeleOp(name = "BLUE TeleOp")
 public class blue_teleOp_test extends LinearOpMode {
 
     private TelemetryManager ptelemetry = PanelsTelemetry.INSTANCE.getTelemetry();

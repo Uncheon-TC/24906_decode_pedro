@@ -67,7 +67,7 @@ public class pos_const {
 
 
     // RED_FAR
-    public static Pose RED_FAR_15_START = new Pose(92, 8, Math.toRadians(0));
+    public static Pose RED_FAR_15_START = new Pose(95, 8.5, Math.toRadians(0));
     public static Pose RED_FAR_15_EAT1 = new Pose(128,35, Math.toRadians(0));
     public static Pose RED_FAR_15_EAT1_CP = new Pose(93,39, Math.toRadians(0));
     public static Pose RED_FAR_15_SHOOT = new Pose(94, 12, Math.toRadians(0));
@@ -77,6 +77,14 @@ public class pos_const {
     public static Pose RED_FAR_15_EAT3 = new Pose(128.5, 8, Math.toRadians(40));
     public static Pose RED_FAR_15_EAT3_Again = new Pose(128.5,33,Math.toRadians(40)); //기존 - 130,40
     public static Pose RED_FAR_END = new Pose(110,8, Math.toRadians(0));
+    public static Pose RED_FAR_EAT_1 = new Pose(131,10,0);
+    public static Pose RED_FAR_EAT_2 = new Pose(131,40,0);
+    public static Pose RED_PARKING = new Pose (105,32.5,0);
+    public static Pose RED_FAR_EAT_2_CP = new Pose(95,40);
+    public static Pose BLUE_FAR_EAT_1 = RED_FAR_EAT_1.mirror();
+    public static Pose BLUE_FAR_EAT_2 = RED_FAR_EAT_2.mirror();
+    public static Pose BLUE_PARKING = RED_PARKING.mirror();
+    public static Pose BLUE_FAR_EAT_2_CP = RED_FAR_EAT_2_CP.mirror();
 
     // BLUE_FAR
     public static Pose BLUE_FAR_15_START =  RED_FAR_15_START.mirror();

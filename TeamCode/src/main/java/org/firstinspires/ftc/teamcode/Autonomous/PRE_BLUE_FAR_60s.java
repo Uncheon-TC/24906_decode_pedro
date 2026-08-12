@@ -9,8 +9,16 @@ import static org.firstinspires.ftc.teamcode.sub_const.pos_const.BLUE_FAR_15_EAT
 import static org.firstinspires.ftc.teamcode.sub_const.pos_const.BLUE_FAR_15_EAT3_Again;
 import static org.firstinspires.ftc.teamcode.sub_const.pos_const.BLUE_FAR_15_SHOOT;
 import static org.firstinspires.ftc.teamcode.sub_const.pos_const.BLUE_FAR_15_START;
+import static org.firstinspires.ftc.teamcode.sub_const.pos_const.BLUE_FAR_EAT_1;
+import static org.firstinspires.ftc.teamcode.sub_const.pos_const.BLUE_FAR_EAT_2;
+import static org.firstinspires.ftc.teamcode.sub_const.pos_const.BLUE_FAR_EAT_2_CP;
 import static org.firstinspires.ftc.teamcode.sub_const.pos_const.BLUE_FAR_END;
 import static org.firstinspires.ftc.teamcode.sub_const.pos_const.BLUE_GOAL;
+import static org.firstinspires.ftc.teamcode.sub_const.pos_const.RED_FAR_15_SHOOT;
+import static org.firstinspires.ftc.teamcode.sub_const.pos_const.RED_FAR_15_START;
+import static org.firstinspires.ftc.teamcode.sub_const.pos_const.RED_FAR_EAT_1;
+import static org.firstinspires.ftc.teamcode.sub_const.pos_const.RED_FAR_EAT_2;
+import static org.firstinspires.ftc.teamcode.sub_const.pos_const.RED_FAR_EAT_2_CP;
 import static org.firstinspires.ftc.teamcode.sub_const.shooter_const.FLYWHEEL_TPR;
 import static org.firstinspires.ftc.teamcode.sub_const.shooter_const.HOOD_MAX_ANGLE;
 import static org.firstinspires.ftc.teamcode.sub_const.shooter_const.HOOD_MIN_ANGLE;
@@ -79,20 +87,9 @@ public class PRE_BLUE_FAR_60s extends OpMode {
 
     private double shooter_power = 0;
 
-    private Path first_shoot;
-    private Path eat1;
-    private Path eat2;
-    private Path eat3;
-    private Path eat4;
-    private Path shoot1;
-    private Path shoot2;
-    private Path shoot3;
-    private Path shoot4;
-    private Path to_end;
-    private Path eat2again;
-    private Path eat3again;
+    private Path FE,RSF,SE,RSS,PARK;
 
-    private PathChain eat_shoot1, eat_shoot2, eat_shoot3, eat_shoot4, gate_again;
+    private PathChain cycle1,cycle2,parking;
 
 
     @Override
@@ -185,7 +182,7 @@ public class PRE_BLUE_FAR_60s extends OpMode {
 
 
         shooter.ShotResult result = shooter.calculateShot(current_robot_pos, BLUE_GOAL, SCORE_HEIGHT, current_robot_vel, SCORE_ANGLE);
-        if (result != null) {
+        if (result != null && pathState < 100) {
 
             double StaticTargetPosTicks = tracking.fix_to_goal_BLUE(current_robot_pos);
 
@@ -240,13 +237,90 @@ public class PRE_BLUE_FAR_60s extends OpMode {
 
     public void buildPaths() { //경로 만들기
 
+        FE = new Path(new BezierLine(BLUE_FAR_15_START, BLUE_FAR_EAT_1));
+        FE.setLinearHeadingInterpolation(BLUE_FAR_15_START.getHeading(), BLUE_FAR_EAT_1.getHeading());
 
+        RSF = new Path(new BezierLine(BLUE_FAR_EAT_1, BLUE_FAR_15_SHOOT));
+        RSF.setLinearHeadingInterpolation(BLUE_FAR_EAT_1.getHeading(), BLUE_FAR_15_SHOOT.getHeading());
+
+        SE = new Path(new BezierCurve(BLUE_FAR_15_SHOOT, BLUE_FAR_EAT_2_CP, BLUE_FAR_EAT_2));
+        SE.setLinearHeadingInterpolation(BLUE_FAR_15_SHOOT.getHeading(), BLUE_FAR_EAT_2.getHeading());
+
+        RSS = new Path(new BezierCurve(BLUE_FAR_15_EAT2, BLUE_FAR_EAT_2_CP, BLUE_FAR_15_SHOOT));
+        RSS.setLinearHeadingInterpolation(BLUE_FAR_15_EAT2.getHeading(), BLUE_FAR_15_SHOOT.getHeading());
     }
 
-    public void autonomousPathUpdate(){
-        switch(pathState){
+    public void autonomousPathUpdate() {
+        // 55초 경과 시 즉시 주차 모드 (Case 100) 진입
+        if (opmodeTimer.getElapsedTimeSeconds() >= 55.0 && pathState < 100) {
+            setPathState(100);
+            stop_eatting();
+            shoot_stop();
+            SL.setPower(0); SR.setPower(0); SA.setPower(0);
+            Path parkPath = new Path(new BezierLine(follower.getPose(), pos_const.RED_PARKING));
+            parkPath.setLinearHeadingInterpolation(follower.getPose().getHeading(), pos_const.RED_PARKING.getHeading());
+            follower.followPath(parkPath, true);
+        }
 
+        switch (pathState) {
+            case 0: // 슈터 대기
+                if (isShooterReady()) setPathState(1);
+                break;
 
+            case 1: // 프리로드 샷 후 FE(수집1) 시작
+                shoot();
+                if (pathTimer.getElapsedTimeSeconds() >= 1.0) {
+                    shoot_stop();
+                    follower.followPath(FE);
+                    setPathState(2);
+                }
+                break;
+
+            case 2: // FE 이동 완료 대기 (수집 중)
+                eatting();
+                if (!follower.isBusy()) {
+                    follower.followPath(RSF);
+                    setPathState(3);
+                }
+                break;
+
+            case 3: // RSF 이동 완료 대기 (슈팅 위치 1로 이동)
+                if (!follower.isBusy()) setPathState(4);
+                break;
+
+            case 4: // 슈팅 1 후 SE(수집2) 시작
+                shoot();
+                if (pathTimer.getElapsedTimeSeconds() >= 1.0) {
+                    shoot_stop();
+                    follower.followPath(SE);
+                    setPathState(5);
+                }
+                break;
+
+            case 5: // SE 이동 완료 대기 (수집 중)
+                eatting();
+                if (!follower.isBusy()) {
+                    follower.followPath(RSS);
+                    setPathState(6);
+                }
+                break;
+
+            case 6: // RSS 이동 완료 대기 (슈팅 위치 2로 이동)
+                if (!follower.isBusy()) setPathState(7);
+                break;
+
+            case 7: // 슈팅 2 후 다시 FE(수집1)로 이동 (무한 반복 루프)
+                shoot();
+                if (pathTimer.getElapsedTimeSeconds() >= 1.0) {
+                    shoot_stop();
+                    follower.followPath(FE);
+                    setPathState(2); // FE 이동 대기 상태인 2번으로 점프
+                }
+                break;
+
+            case 100: // 주차 상태
+                if (!follower.isBusy()) setPathState(101);
+                break;
         }
     }
 

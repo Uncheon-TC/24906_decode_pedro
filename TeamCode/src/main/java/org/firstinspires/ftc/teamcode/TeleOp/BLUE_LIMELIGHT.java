@@ -50,7 +50,7 @@ import org.firstinspires.ftc.teamcode.sub_const.shooter_const;
 
 @Configurable
 
-@TeleOp(name = "TELEOP_BLUE_LIMELIGHT", group = "2025-2026 Test OP")
+@TeleOp(name = "TELEOP_BLUE_LIMELIGHT")
 public class BLUE_LIMELIGHT extends LinearOpMode {
 
     private TelemetryManager ptelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
