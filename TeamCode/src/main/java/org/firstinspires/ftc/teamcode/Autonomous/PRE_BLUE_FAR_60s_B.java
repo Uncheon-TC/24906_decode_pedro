@@ -1,16 +1,12 @@
 package org.firstinspires.ftc.teamcode.Autonomous;
 
-import static org.firstinspires.ftc.teamcode.sub_const.pos_const.RED_FAR_15_EAT1;
-import static org.firstinspires.ftc.teamcode.sub_const.pos_const.RED_FAR_15_EAT1_CP;
-import static org.firstinspires.ftc.teamcode.sub_const.pos_const.RED_FAR_15_EAT2;
-import static org.firstinspires.ftc.teamcode.sub_const.pos_const.RED_FAR_15_EAT2_Again;
-import static org.firstinspires.ftc.teamcode.sub_const.pos_const.RED_FAR_15_EAT2_CP;
-import static org.firstinspires.ftc.teamcode.sub_const.pos_const.RED_FAR_15_EAT3;
-import static org.firstinspires.ftc.teamcode.sub_const.pos_const.RED_FAR_15_EAT3_Again;
-import static org.firstinspires.ftc.teamcode.sub_const.pos_const.RED_FAR_15_SHOOT;
-import static org.firstinspires.ftc.teamcode.sub_const.pos_const.RED_FAR_15_START;
-import static org.firstinspires.ftc.teamcode.sub_const.pos_const.RED_FAR_END;
-import static org.firstinspires.ftc.teamcode.sub_const.pos_const_original.RED_GOAL;
+import static org.firstinspires.ftc.teamcode.sub_const.pos_const.BLUE_FAR_15_EAT2;
+import static org.firstinspires.ftc.teamcode.sub_const.pos_const.BLUE_FAR_15_SHOOT;
+import static org.firstinspires.ftc.teamcode.sub_const.pos_const.BLUE_FAR_15_START;
+import static org.firstinspires.ftc.teamcode.sub_const.pos_const.BLUE_FAR_EAT_1;
+import static org.firstinspires.ftc.teamcode.sub_const.pos_const.BLUE_FAR_EAT_2;
+import static org.firstinspires.ftc.teamcode.sub_const.pos_const.BLUE_FAR_EAT_2_CP;
+import static org.firstinspires.ftc.teamcode.sub_const.pos_const.BLUE_GOAL;
 import static org.firstinspires.ftc.teamcode.sub_const.shooter_const.FLYWHEEL_TPR;
 import static org.firstinspires.ftc.teamcode.sub_const.shooter_const.HOOD_MAX_ANGLE;
 import static org.firstinspires.ftc.teamcode.sub_const.shooter_const.HOOD_MIN_ANGLE;
@@ -56,8 +52,8 @@ import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.sub_const.pos_const;
 import org.firstinspires.ftc.teamcode.sub_const.servo_pos_const;
 
-@Autonomous(name = "AUTO_PRE_RED_FAR_60s", group = "2026Premiere", preselectTeleOp = "TELEOP_RED_Priemier")
-public class PRE_RED_FAR_60s extends OpMode {
+@Autonomous(name = "AUTO_PRE_BLUE_FAR_60s_B", group = "2026Premiere", preselectTeleOp = "TELEOP_BLUE_Priemier")
+public class PRE_BLUE_FAR_60s_B extends OpMode {
 
     private TelemetryManager panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
     private static final double SHOOTER_POWER_RATIO = 0.67; //속도 오프셋
@@ -79,7 +75,10 @@ public class PRE_RED_FAR_60s extends OpMode {
 
     private double shooter_power = 0;
 
-    private Path FE, RSF, SE, RSS;
+    private Path FE,RSF,SE,RSS,PARK;
+
+    private PathChain cycle1,cycle2,parking;
+
 
     @Override
     public void init() {
@@ -90,7 +89,7 @@ public class PRE_RED_FAR_60s extends OpMode {
 
         follower = Constants.createFollower(hardwareMap);
         buildPaths();
-        follower.setStartingPose(RED_FAR_15_START);
+        follower.setStartingPose(BLUE_FAR_15_START);
 
         //////////////////////////////////////////
 
@@ -112,16 +111,23 @@ public class PRE_RED_FAR_60s extends OpMode {
 
         SA.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+        //SL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        //SR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
         SL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         SR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         SL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
         SR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        //SR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         SL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         SR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 
+
         eat.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
         eat.setPower(0);
 
         servo_S = hardwareMap.servo.get("servo_S");
@@ -139,6 +145,7 @@ public class PRE_RED_FAR_60s extends OpMode {
                 .PIDFCoefficients(flywheel_p, flywheel_i, flywheel_d, flywheel_f);
 
         SL.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, flywheel_pidfCoeffiients);
+        //SR.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, flywheel_pidfCoeffiients);
 
     }
 
@@ -162,10 +169,10 @@ public class PRE_RED_FAR_60s extends OpMode {
         Vector current_robot_vel = follower.getVelocity();
 
 
-        shooter.ShotResult result = shooter.calculateShot(current_robot_pos, RED_GOAL, SCORE_HEIGHT, current_robot_vel, SCORE_ANGLE);
+        shooter.ShotResult result = shooter.calculateShot(current_robot_pos, BLUE_GOAL, SCORE_HEIGHT, current_robot_vel, SCORE_ANGLE);
         if (result != null && pathState < 100) {
 
-            double StaticTargetPosTicks = tracking.fix_to_goal_RED(current_robot_pos);
+            double StaticTargetPosTicks = tracking.fix_to_goal_BLUE(current_robot_pos);
 
             double offsetTicks = (result.turretOffset / (2 * Math.PI)) * SHOOTER_ANGLE_TPR * (105.0/25.0);
 
@@ -209,6 +216,8 @@ public class PRE_RED_FAR_60s extends OpMode {
         panelsTelemetry.addData("current_velo", SL.getVelocity());
         panelsTelemetry.addData("cueent_vele_nonoff", SL.getVelocity()/0.64);
 
+        //panelsTelemetry.addData("velo")
+
         panelsTelemetry.update(telemetry);
 
     }
@@ -216,27 +225,26 @@ public class PRE_RED_FAR_60s extends OpMode {
 
     public void buildPaths() { //경로 만들기
 
-        FE = new Path(new BezierCurve(RED_FAR_15_START, RED_FAR_15_EAT1_CP, RED_FAR_15_EAT1));
-        FE.setLinearHeadingInterpolation(RED_FAR_15_START.getHeading(), RED_FAR_15_EAT1.getHeading());
+        FE = new Path(new BezierLine(BLUE_FAR_15_START, BLUE_FAR_EAT_1));
+        FE.setLinearHeadingInterpolation(BLUE_FAR_15_START.getHeading(), BLUE_FAR_EAT_1.getHeading());
 
-        RSF = new Path(new BezierLine(RED_FAR_15_EAT1, RED_FAR_15_SHOOT));
-        RSF.setLinearHeadingInterpolation(RED_FAR_15_EAT1.getHeading(), RED_FAR_15_SHOOT.getHeading());
+        RSF = new Path(new BezierLine(BLUE_FAR_EAT_1, BLUE_FAR_15_SHOOT));
+        RSF.setLinearHeadingInterpolation(BLUE_FAR_EAT_1.getHeading(), BLUE_FAR_15_SHOOT.getHeading());
 
-        SE = new Path(new BezierCurve(RED_FAR_15_SHOOT, RED_FAR_15_EAT2_CP, RED_FAR_15_EAT2));
-        SE.setLinearHeadingInterpolation(RED_FAR_15_SHOOT.getHeading(), RED_FAR_15_EAT2.getHeading());
+        SE = new Path(new BezierCurve(BLUE_FAR_15_SHOOT, BLUE_FAR_EAT_2_CP, BLUE_FAR_EAT_2));
+        SE.setLinearHeadingInterpolation(BLUE_FAR_15_SHOOT.getHeading(), BLUE_FAR_EAT_2.getHeading());
 
-        RSS = new Path(new BezierCurve(RED_FAR_15_EAT2, RED_FAR_15_EAT2_CP, RED_FAR_15_SHOOT));
-        RSS.setLinearHeadingInterpolation(RED_FAR_15_EAT2.getHeading(), RED_FAR_15_SHOOT.getHeading());
+        RSS = new Path(new BezierCurve(BLUE_FAR_15_EAT2, BLUE_FAR_EAT_2_CP, BLUE_FAR_15_SHOOT));
+        RSS.setLinearHeadingInterpolation(BLUE_FAR_15_EAT2.getHeading(), BLUE_FAR_15_SHOOT.getHeading());
     }
 
     public void autonomousPathUpdate() {
+        // 55초 경과 시 즉시 주차 모드 (Case 100) 진입
         if (opmodeTimer.getElapsedTimeSeconds() >= 55.0 && pathState < 100) {
             setPathState(100);
             stop_eatting();
             shoot_stop();
-            SL.setPower(0);
-            SR.setPower(0);
-            SA.setPower(0);
+            SL.setPower(0); SR.setPower(0); SA.setPower(0);
             Path parkPath = new Path(new BezierLine(follower.getPose(), pos_const.RED_PARKING));
             parkPath.setLinearHeadingInterpolation(follower.getPose().getHeading(), pos_const.RED_PARKING.getHeading());
             follower.followPath(parkPath, true);
@@ -244,12 +252,10 @@ public class PRE_RED_FAR_60s extends OpMode {
 
         switch (pathState) {
             case 0: // 슈터 대기
-                if (isShooterReady()) {
-                    setPathState(1);
-                }
+                if (isShooterReady()) setPathState(1);
                 break;
 
-            case 1: // 프리로드 샷
+            case 1: // 프리로드 샷 후 FE(수집1) 시작
                 shoot();
                 if (pathTimer.getElapsedTimeSeconds() >= 1.0) {
                     shoot_stop();
@@ -258,7 +264,7 @@ public class PRE_RED_FAR_60s extends OpMode {
                 }
                 break;
 
-            case 2: // 첫 번째 기물 수집 이동 중
+            case 2: // FE 이동 완료 대기 (수집 중)
                 eatting();
                 if (!follower.isBusy()) {
                     follower.followPath(RSF);
@@ -266,13 +272,11 @@ public class PRE_RED_FAR_60s extends OpMode {
                 }
                 break;
 
-            case 3: // 슈팅 위치 이동 중
-                if (!follower.isBusy()) {
-                    setPathState(4);
-                }
+            case 3: // RSF 이동 완료 대기 (슈팅 위치 1로 이동)
+                if (!follower.isBusy()) setPathState(4);
                 break;
 
-            case 4: // 첫 번째 기물 슈팅
+            case 4: // 슈팅 1 후 SE(수집2) 시작
                 shoot();
                 if (pathTimer.getElapsedTimeSeconds() >= 1.0) {
                     shoot_stop();
@@ -281,7 +285,7 @@ public class PRE_RED_FAR_60s extends OpMode {
                 }
                 break;
 
-            case 5: // 두 번째 기물 수집 이동 중
+            case 5: // SE 이동 완료 대기 (수집 중)
                 eatting();
                 if (!follower.isBusy()) {
                     follower.followPath(RSS);
@@ -289,25 +293,21 @@ public class PRE_RED_FAR_60s extends OpMode {
                 }
                 break;
 
-            case 6: // 슈팅 위치 이동 중 (두 번째)
-                if (!follower.isBusy()) {
-                    setPathState(7);
-                }
+            case 6: // RSS 이동 완료 대기 (슈팅 위치 2로 이동)
+                if (!follower.isBusy()) setPathState(7);
                 break;
 
-            case 7: // 두 번째 기물 슈팅 후 반복
+            case 7: // 슈팅 2 후 다시 FE(수집1)로 이동 (무한 반복 루프)
                 shoot();
                 if (pathTimer.getElapsedTimeSeconds() >= 1.0) {
                     shoot_stop();
                     follower.followPath(FE);
-                    setPathState(2);
+                    setPathState(2); // FE 이동 대기 상태인 2번으로 점프
                 }
                 break;
 
-            case 100:
-                if (!follower.isBusy()) {
-                    setPathState(101);
-                }
+            case 100: // 주차 상태
+                if (!follower.isBusy()) setPathState(101);
                 break;
         }
     }
@@ -346,6 +346,7 @@ public class PRE_RED_FAR_60s extends OpMode {
     }
 
     private void shoot_stop() {
+        //eat.setPower(0);
         servo_S.setPosition(servo_pos_const.servo_shoot_block);
     }
 
@@ -356,11 +357,12 @@ public class PRE_RED_FAR_60s extends OpMode {
     private void eat_servo_down() {
         servo_eat.setPosition(servo_pos_const.servo_eat_down);
     }
-
+    // 슈터 속도 준비 여부 함수====
     private boolean isShooterReady() {
         double target = targetMotorVelocity * SHOOTER_POWER_RATIO;
         double current = SL.getVelocity();
 
         return Math.abs(target - current) <= 50;
     }
+    // ==============
 }

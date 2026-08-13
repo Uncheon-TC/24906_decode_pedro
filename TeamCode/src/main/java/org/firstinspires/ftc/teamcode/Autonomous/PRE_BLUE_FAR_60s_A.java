@@ -1,24 +1,12 @@
 package org.firstinspires.ftc.teamcode.Autonomous;
 
-import static org.firstinspires.ftc.teamcode.sub_const.pos_const.BLUE_FAR_15_EAT1;
-import static org.firstinspires.ftc.teamcode.sub_const.pos_const.BLUE_FAR_15_EAT1_CP;
 import static org.firstinspires.ftc.teamcode.sub_const.pos_const.BLUE_FAR_15_EAT2;
-import static org.firstinspires.ftc.teamcode.sub_const.pos_const.BLUE_FAR_15_EAT2_Again;
-import static org.firstinspires.ftc.teamcode.sub_const.pos_const.BLUE_FAR_15_EAT2_CP;
-import static org.firstinspires.ftc.teamcode.sub_const.pos_const.BLUE_FAR_15_EAT3;
-import static org.firstinspires.ftc.teamcode.sub_const.pos_const.BLUE_FAR_15_EAT3_Again;
 import static org.firstinspires.ftc.teamcode.sub_const.pos_const.BLUE_FAR_15_SHOOT;
 import static org.firstinspires.ftc.teamcode.sub_const.pos_const.BLUE_FAR_15_START;
 import static org.firstinspires.ftc.teamcode.sub_const.pos_const.BLUE_FAR_EAT_1;
 import static org.firstinspires.ftc.teamcode.sub_const.pos_const.BLUE_FAR_EAT_2;
 import static org.firstinspires.ftc.teamcode.sub_const.pos_const.BLUE_FAR_EAT_2_CP;
-import static org.firstinspires.ftc.teamcode.sub_const.pos_const.BLUE_FAR_END;
 import static org.firstinspires.ftc.teamcode.sub_const.pos_const.BLUE_GOAL;
-import static org.firstinspires.ftc.teamcode.sub_const.pos_const.RED_FAR_15_SHOOT;
-import static org.firstinspires.ftc.teamcode.sub_const.pos_const.RED_FAR_15_START;
-import static org.firstinspires.ftc.teamcode.sub_const.pos_const.RED_FAR_EAT_1;
-import static org.firstinspires.ftc.teamcode.sub_const.pos_const.RED_FAR_EAT_2;
-import static org.firstinspires.ftc.teamcode.sub_const.pos_const.RED_FAR_EAT_2_CP;
 import static org.firstinspires.ftc.teamcode.sub_const.shooter_const.FLYWHEEL_TPR;
 import static org.firstinspires.ftc.teamcode.sub_const.shooter_const.HOOD_MAX_ANGLE;
 import static org.firstinspires.ftc.teamcode.sub_const.shooter_const.HOOD_MIN_ANGLE;
@@ -64,11 +52,11 @@ import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.sub_const.pos_const;
 import org.firstinspires.ftc.teamcode.sub_const.servo_pos_const;
 
-@Autonomous(name = "AUTO_PRE_BLUE_FAR_60s", group = "2026Premiere", preselectTeleOp = "TELEOP_BLUE_Priemier")
-public class PRE_BLUE_FAR_60s extends OpMode {
+@Autonomous(name = "AUTO_PRE_BLUE_FAR_60s_A", group = "2026Premiere", preselectTeleOp = "TELEOP_BLUE_Priemier")
+public class PRE_BLUE_FAR_60s_A extends OpMode {
 
     private TelemetryManager panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
-    private static final double SHOOTER_POWER_RATIO = 0.67; //속도 오프셋
+    private static final double SHOOTER_POWER_RATIO = 0.69; //속도 오프셋
     private Follower follower;
     private Timer pathTimer, actionTimer, opmodeTimer, segmentTime;
     private int pathState;
@@ -252,7 +240,7 @@ public class PRE_BLUE_FAR_60s extends OpMode {
 
     public void autonomousPathUpdate() {
         // 55초 경과 시 즉시 주차 모드 (Case 100) 진입
-        if (opmodeTimer.getElapsedTimeSeconds() >= 55.0 && pathState < 100) {
+        /*if (opmodeTimer.getElapsedTimeSeconds() >= 55.0 && pathState < 100) {
             setPathState(100);
             stop_eatting();
             shoot_stop();
@@ -260,7 +248,7 @@ public class PRE_BLUE_FAR_60s extends OpMode {
             Path parkPath = new Path(new BezierLine(follower.getPose(), pos_const.RED_PARKING));
             parkPath.setLinearHeadingInterpolation(follower.getPose().getHeading(), pos_const.RED_PARKING.getHeading());
             follower.followPath(parkPath, true);
-        }
+        }*/
 
         switch (pathState) {
             case 0: // 슈터 대기
@@ -318,9 +306,9 @@ public class PRE_BLUE_FAR_60s extends OpMode {
                 }
                 break;
 
-            case 100: // 주차 상태
+           /* case 100: // 주차 상태
                 if (!follower.isBusy()) setPathState(101);
-                break;
+                break;*/
         }
     }
 

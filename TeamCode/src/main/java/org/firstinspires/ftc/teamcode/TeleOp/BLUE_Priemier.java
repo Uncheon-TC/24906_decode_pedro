@@ -246,9 +246,9 @@ public class BLUE_Priemier extends LinearOpMode {
 
 
             if (distToGoal<130){
-                vel_off = 0.65;
+                vel_off = 0.64;
             } else{
-                vel_off = 0.67;
+                vel_off = 0.69;
             }
 
 
@@ -260,7 +260,7 @@ public class BLUE_Priemier extends LinearOpMode {
                 //eat.setPower(0);
             }
 
-            if (gamepad1.x) eat.setPower(1);
+            if (gamepad1.x) eat.setPower(0.5);
 
             if (gamepad1.y) eat.setPower(0);
 
@@ -330,13 +330,6 @@ public class BLUE_Priemier extends LinearOpMode {
                 SA.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             }*/
 
-            if (gamepad2.dpadUpWasPressed()){
-                vel_off = 0.67;
-            }
-
-            if (gamepad2.dpadDownWasPressed()){
-                vel_off = 0.65;
-            }
 
             shooter.ShotResult result = shooter.calculateShot(follower.getPose(), BLUE_GOAL, SCORE_HEIGHT, follower.getVelocity(), SCORE_ANGLE);
 
