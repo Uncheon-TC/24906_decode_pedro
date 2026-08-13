@@ -339,7 +339,7 @@ public class PRE_RED_CLOSE_30s extends OpMode {
                 break;
 
             case 11:
-                if(pathTimer.getElapsedTimeSeconds()>=2){
+                if(pathTimer.getElapsedTimeSeconds()>=3){
                     follower.followPath(RS);
                     setPathState(12);
                 }
@@ -371,7 +371,7 @@ public class PRE_RED_CLOSE_30s extends OpMode {
                 break;
 
             case 16:
-                if(pathTimer.getElapsedTimeSeconds()>=2){
+                if(pathTimer.getElapsedTimeSeconds()>=3){
                     follower.followPath(RS);
                     setPathState(17);
                 }

@@ -234,8 +234,8 @@ public class PRE_BLUE_FAR_60s_A extends OpMode {
         SE = new Path(new BezierCurve(BLUE_FAR_15_SHOOT, BLUE_FAR_EAT_2_CP, BLUE_FAR_EAT_2));
         SE.setLinearHeadingInterpolation(BLUE_FAR_15_SHOOT.getHeading(), BLUE_FAR_EAT_2.getHeading());
 
-        RSS = new Path(new BezierCurve(BLUE_FAR_15_EAT2, BLUE_FAR_EAT_2_CP, BLUE_FAR_15_SHOOT));
-        RSS.setLinearHeadingInterpolation(BLUE_FAR_15_EAT2.getHeading(), BLUE_FAR_15_SHOOT.getHeading());
+        RSS = new Path(new BezierCurve(BLUE_FAR_EAT_2, BLUE_FAR_EAT_2_CP, BLUE_FAR_15_SHOOT));
+        RSS.setLinearHeadingInterpolation(BLUE_FAR_EAT_2.getHeading(), BLUE_FAR_15_SHOOT.getHeading());
     }
 
     public void autonomousPathUpdate() {

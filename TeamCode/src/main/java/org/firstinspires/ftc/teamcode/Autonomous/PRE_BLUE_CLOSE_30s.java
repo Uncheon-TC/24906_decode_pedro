@@ -178,7 +178,7 @@ public class PRE_BLUE_CLOSE_30s extends OpMode {
 
 
         shooter.ShotResult result = shooter.calculateShot(current_robot_pos, BLUE_GOAL, SCORE_HEIGHT, current_robot_vel, SCORE_ANGLE);
-        if (result != null) {
+        if (result != null&&pathState<19) {
 
             double StaticTargetPosTicks = tracking.fix_to_goal_BLUE(current_robot_pos);
 
@@ -342,7 +342,7 @@ public class PRE_BLUE_CLOSE_30s extends OpMode {
                 break;
 
             case 11:
-                if(pathTimer.getElapsedTimeSeconds()>=2.5){
+                if(pathTimer.getElapsedTimeSeconds()>=3){
                     follower.followPath(RS);
                     setPathState(12);
                 }
@@ -376,7 +376,7 @@ public class PRE_BLUE_CLOSE_30s extends OpMode {
                 break;
 
             case 16:
-                if(pathTimer.getElapsedTimeSeconds()>=2.5){
+                if(pathTimer.getElapsedTimeSeconds()>=3){
                     follower.followPath(RS);
                     setPathState(17);
                 }
@@ -399,6 +399,9 @@ public class PRE_BLUE_CLOSE_30s extends OpMode {
             case 19:
                 follower.followPath(OUT);
                 setPathState(20);
+                eat.setPower(0);
+                SL.setPower(0);
+                SR.setPower(0);
                 break;
 
         }

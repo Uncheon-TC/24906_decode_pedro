@@ -56,7 +56,7 @@ import org.firstinspires.ftc.teamcode.sub_const.servo_pos_const;
 public class PRE_BLUE_FAR_60s_B extends OpMode {
 
     private TelemetryManager panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
-    private static final double SHOOTER_POWER_RATIO = 0.67; //속도 오프셋
+    private static final double SHOOTER_POWER_RATIO = 0.685; //속도 오프셋
     private Follower follower;
     private Timer pathTimer, actionTimer, opmodeTimer, segmentTime;
     private int pathState;
@@ -234,8 +234,8 @@ public class PRE_BLUE_FAR_60s_B extends OpMode {
         SE = new Path(new BezierCurve(BLUE_FAR_15_SHOOT, BLUE_FAR_EAT_2_CP, BLUE_FAR_EAT_2));
         SE.setLinearHeadingInterpolation(BLUE_FAR_15_SHOOT.getHeading(), BLUE_FAR_EAT_2.getHeading());
 
-        RSS = new Path(new BezierCurve(BLUE_FAR_15_EAT2, BLUE_FAR_EAT_2_CP, BLUE_FAR_15_SHOOT));
-        RSS.setLinearHeadingInterpolation(BLUE_FAR_15_EAT2.getHeading(), BLUE_FAR_15_SHOOT.getHeading());
+        RSS = new Path(new BezierCurve(BLUE_FAR_EAT_2, BLUE_FAR_EAT_2_CP, BLUE_FAR_15_SHOOT));
+        RSS.setLinearHeadingInterpolation(BLUE_FAR_EAT_2.getHeading(), BLUE_FAR_15_SHOOT.getHeading());
     }
 
     public void autonomousPathUpdate() {
@@ -245,8 +245,8 @@ public class PRE_BLUE_FAR_60s_B extends OpMode {
             stop_eatting();
             shoot_stop();
             SL.setPower(0); SR.setPower(0); SA.setPower(0);
-            Path parkPath = new Path(new BezierLine(follower.getPose(), pos_const.RED_PARKING));
-            parkPath.setLinearHeadingInterpolation(follower.getPose().getHeading(), pos_const.RED_PARKING.getHeading());
+            Path parkPath = new Path(new BezierLine(follower.getPose(), pos_const.BLUE_PARKING));
+            parkPath.setLinearHeadingInterpolation(follower.getPose().getHeading(), pos_const.BLUE_PARKING.getHeading());
             follower.followPath(parkPath, true);
         }
 

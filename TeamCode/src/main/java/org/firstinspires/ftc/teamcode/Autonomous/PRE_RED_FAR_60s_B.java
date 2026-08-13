@@ -6,6 +6,7 @@ import static org.firstinspires.ftc.teamcode.sub_const.pos_const.RED_FAR_15_EAT2
 import static org.firstinspires.ftc.teamcode.sub_const.pos_const.RED_FAR_15_EAT2_CP;
 import static org.firstinspires.ftc.teamcode.sub_const.pos_const.RED_FAR_15_SHOOT;
 import static org.firstinspires.ftc.teamcode.sub_const.pos_const.RED_FAR_15_START;
+import static org.firstinspires.ftc.teamcode.sub_const.pos_const.RED_FAR_EAT_2_CP;
 import static org.firstinspires.ftc.teamcode.sub_const.pos_const_original.RED_GOAL;
 import static org.firstinspires.ftc.teamcode.sub_const.shooter_const.FLYWHEEL_TPR;
 import static org.firstinspires.ftc.teamcode.sub_const.shooter_const.HOOD_MAX_ANGLE;
@@ -217,10 +218,10 @@ public class PRE_RED_FAR_60s_B extends OpMode {
         RSF = new Path(new BezierLine(RED_FAR_15_EAT1, RED_FAR_15_SHOOT));
         RSF.setLinearHeadingInterpolation(RED_FAR_15_EAT1.getHeading(), RED_FAR_15_SHOOT.getHeading());
 
-        SE = new Path(new BezierCurve(RED_FAR_15_SHOOT, RED_FAR_15_EAT2_CP, RED_FAR_15_EAT2));
+        SE = new Path(new BezierCurve(RED_FAR_15_SHOOT, RED_FAR_EAT_2_CP, RED_FAR_15_EAT2));
         SE.setLinearHeadingInterpolation(RED_FAR_15_SHOOT.getHeading(), RED_FAR_15_EAT2.getHeading());
 
-        RSS = new Path(new BezierCurve(RED_FAR_15_EAT2, RED_FAR_15_EAT2_CP, RED_FAR_15_SHOOT));
+        RSS = new Path(new BezierCurve(RED_FAR_15_EAT2, RED_FAR_EAT_2_CP, RED_FAR_15_SHOOT));
         RSS.setLinearHeadingInterpolation(RED_FAR_15_EAT2.getHeading(), RED_FAR_15_SHOOT.getHeading());
     }
 

@@ -119,7 +119,7 @@ public class RED_Priemier extends LinearOpMode {
         /*odo = hardwareMap.get(GoBildaPinpointDriver.class, "pinpoint");
         odo.setOffsets(-12, -5);  //cm?
         odo.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
-        odo.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD,
+        odo.setEncoderDirections(GoBildaPinpointDriver.Enc0oderDirection.FORWARD,
                 GoBildaPinpointDriver.EncoderDirection.FORWARD);*/
 
         eat.setDirection(DcMotorSimple.Direction.REVERSE);

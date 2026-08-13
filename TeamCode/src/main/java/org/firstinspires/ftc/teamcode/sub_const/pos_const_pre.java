@@ -7,11 +7,11 @@ public class pos_const_pre {
     public static Pose blue_close_shot = new Pose(45, 100, Math.toRadians(180));
     public static Pose blue_eat_first_CP = new Pose(50,80);
     public static Pose blue_eat_first = new Pose(29, 83, Math.toRadians(180));
-    public static Pose blue_eat_second = new Pose(25, 59, Math.toRadians(180));
+    public static Pose blue_eat_second = new Pose(23, 59, Math.toRadians(180));
     public static Pose blue_eat_second_CP = new Pose(45, 58);
-    public static Pose blue_open_eat_wait = new Pose(22,65,Math.toRadians(180));
+    public static Pose blue_open_eat_wait = new Pose(25,65,Math.toRadians(180));
     public static Pose blue_open_eat_wait_CP = new Pose(67,53);
-    public static Pose blue_open_eat = new Pose(12,61,Math.toRadians(148));
+    public static Pose blue_open_eat = new Pose(10.5,60,Math.toRadians(139));
     public static Pose blue_open_eat_CP = new Pose(25,60);
     public static Pose blue_out = new Pose(40,83,Math.toRadians(180));
 

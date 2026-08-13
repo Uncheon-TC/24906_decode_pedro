@@ -42,7 +42,7 @@ public class Constants {
             .encoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_SWINGARM_POD)
             .forwardEncoderDirection(GoBildaPinpointDriver.EncoderDirection.FORWARD)
             .strafeEncoderDirection(GoBildaPinpointDriver.EncoderDirection.FORWARD)
-            .yawScalar(62.831853/63.035095);
+            .yawScalar(1.000528);
 
     public static MecanumConstants driveConstants = new MecanumConstants()
             .maxPower(1)
