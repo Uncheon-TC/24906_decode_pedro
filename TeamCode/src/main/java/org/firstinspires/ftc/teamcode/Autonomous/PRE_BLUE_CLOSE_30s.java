@@ -259,7 +259,7 @@ public class PRE_BLUE_CLOSE_30s extends OpMode {
         OPwait = new Path(new BezierCurve(blue_close_shot,blue_open_eat_wait_CP,blue_open_eat_wait));
         OPwait.setLinearHeadingInterpolation(blue_close_shot.getHeading(),blue_open_eat_wait.getHeading());
 
-        OP = new Path(new BezierCurve(blue_open_eat_wait,blue_open_eat_CP,blue_open_eat));
+        OP = new Path(new BezierLine(blue_open_eat_wait,blue_open_eat));
         OP.setLinearHeadingInterpolation(blue_open_eat_wait.getHeading(),blue_open_eat.getHeading());
 
         RS = new Path(new BezierLine(blue_open_eat,blue_close_shot));
