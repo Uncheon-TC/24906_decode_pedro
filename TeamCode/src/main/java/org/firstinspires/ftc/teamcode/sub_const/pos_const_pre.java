@@ -18,6 +18,7 @@ public class pos_const_pre {
     public static Pose red_close_start = blue_close_start.mirror();
     public static Pose red_close_shot = blue_close_shot.mirror();
     public static Pose red_eat_first = blue_eat_first.mirror();
+    public static Pose red_eat_first_CP = blue_eat_first_CP.mirror();
     public static Pose red_eat_second = blue_eat_second.mirror();
     public static Pose red_eat_second_CP = blue_eat_second_CP.mirror();
     public static Pose red_open_eat_wait = blue_open_eat_wait.mirror();

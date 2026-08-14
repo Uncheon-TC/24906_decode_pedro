@@ -4,6 +4,7 @@ import static org.firstinspires.ftc.teamcode.sub_const.pos_const.RED_GOAL;
 import static org.firstinspires.ftc.teamcode.sub_const.pos_const_pre.red_close_shot;
 import static org.firstinspires.ftc.teamcode.sub_const.pos_const_pre.red_close_start;
 import static org.firstinspires.ftc.teamcode.sub_const.pos_const_pre.red_eat_first;
+import static org.firstinspires.ftc.teamcode.sub_const.pos_const_pre.red_eat_first_CP;
 import static org.firstinspires.ftc.teamcode.sub_const.pos_const_pre.red_eat_second;
 import static org.firstinspires.ftc.teamcode.sub_const.pos_const_pre.red_eat_second_CP;
 import static org.firstinspires.ftc.teamcode.sub_const.pos_const_pre.red_open_eat;
@@ -175,7 +176,7 @@ public class PRE_RED_CLOSE_30s extends OpMode {
 
 
         shooter.ShotResult result = shooter.calculateShot(current_robot_pos, RED_GOAL, SCORE_HEIGHT, current_robot_vel, SCORE_ANGLE);
-        if (result != null) {
+        if (result != null&&pathState<19) {
 
             double StaticTargetPosTicks = tracking.fix_to_goal_RED(current_robot_pos);
 
@@ -231,7 +232,7 @@ public class PRE_RED_CLOSE_30s extends OpMode {
         FS = new Path(new BezierLine(red_close_start,red_close_shot));
         FS.setLinearHeadingInterpolation(red_close_start.getHeading(),red_close_shot.getHeading());
 
-        E1 = new Path(new BezierLine(red_close_shot,red_eat_first));
+        E1 = new Path(new BezierCurve(red_close_shot,red_eat_first_CP,red_eat_first));
         E1.setLinearHeadingInterpolation(red_close_shot.getHeading(),red_eat_first.getHeading());
 
         SS = new Path(new BezierLine(red_eat_first,red_close_shot));
@@ -394,8 +395,10 @@ public class PRE_RED_CLOSE_30s extends OpMode {
             case 19:
                 follower.followPath(OUT);
                 setPathState(20);
+                eat.setPower(0);
+                SL.setPower(0);
+                SR.setPower(0);
                 break;
-
         }
     }
 

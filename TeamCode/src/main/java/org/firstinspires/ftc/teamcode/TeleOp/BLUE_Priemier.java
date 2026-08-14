@@ -245,10 +245,10 @@ public class BLUE_Priemier extends LinearOpMode {
 
 
 
-            if (distToGoal<130){
-                vel_off = 0.64;
+            if (distToGoal<120){
+                vel_off = 0.635;
             } else{
-                vel_off = 0.69;
+                vel_off = 0.685;
             }
 
 
