@@ -358,6 +358,7 @@ public class PRE_RED_CLOSE_30s extends OpMode {
                     shoot_stop();
                     setPathState(14);
                 }
+                break;
 
             case 14:
                 follower.followPath(OPwait);
