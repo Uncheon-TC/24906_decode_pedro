@@ -12,6 +12,7 @@ import com.pedropathing.control.PIDFCoefficients;
 import com.pedropathing.control.PIDFController;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.Pose;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -27,7 +28,7 @@ import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.auto_cal.Turret_Tracking;
 import org.firstinspires.ftc.teamcode.sub_const.pos_const;
 import org.firstinspires.ftc.teamcode.sub_const.servo_pos_const;
-
+@Disabled
 @Configurable
 
 @TeleOp(name = "BLUE TeleOp")

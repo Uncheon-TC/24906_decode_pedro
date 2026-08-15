@@ -46,6 +46,7 @@ import com.pedropathing.math.Vector;
 import com.pedropathing.paths.Path;
 import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -58,7 +59,7 @@ import org.firstinspires.ftc.teamcode.auto_cal.shooter;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.sub_const.pos_const;
 import org.firstinspires.ftc.teamcode.sub_const.servo_pos_const;
-
+@Disabled
 @Autonomous(name = "RED_CLOSE_18_V2V2", preselectTeleOp = "TELEOP_RED_LIMELIGHT")
 public class RED_CLOSE_18_v2 extends OpMode {
 

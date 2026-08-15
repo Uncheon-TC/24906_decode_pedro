@@ -50,6 +50,7 @@ import com.pedropathing.paths.Path;
 import com.pedropathing.paths.PathChain;
 import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -62,7 +63,7 @@ import org.firstinspires.ftc.teamcode.auto_cal.shooter;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.sub_const.pos_const;
 import org.firstinspires.ftc.teamcode.sub_const.servo_pos_const;
-
+@Disabled
 @Autonomous(name = "blue_test_close_ver2", preselectTeleOp = "decode 23020_BLUE")
 public class blue_AUTO_test extends OpMode {
 
